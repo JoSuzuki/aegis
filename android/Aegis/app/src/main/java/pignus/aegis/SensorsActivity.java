@@ -3,6 +3,7 @@ package pignus.aegis;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.hardware.SensorEventListener;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -24,15 +25,85 @@ import java.io.OutputStreamWriter;
 import java.sql.Time;
 
 public class SensorsActivity extends AppCompatActivity implements SensorEventListener{
-    private  SensorManager mSensorManager;
-    private  Sensor mAccelerometer;
-    private  Sensor mGyroscope;
-    private  Sensor mMagnetometer;
+    private final static int STRING_MAX_SIZE = 10000;
+    String Folder = "123";
+    File folder = new File(Environment.getExternalStorageDirectory() + File.separator + Folder);
+
+    String BufferAccel = "";
+    String BufferGyro = "";
+    String BufferMag = "";
+    String BufferTouch = "";
+
+    File AccelerometerFile = new File("/sdcard/" + Folder + "/Accelerometer.csv");
+    File GyroscopeFile = new File("/sdcard/" + Folder + "/Gyroscope.csv");
+    File MagnetometerFile = new File("/sdcard/" + Folder + "/Magnetometer.csv");
+    File TouchEventFile = new File("/sdcard/" + Folder + "/TouchEvent.csv");
+
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer, mGyroscope, mMagnetometer;
+    Display display;
+    int PhoneOrientation;
+    int SensorType;
+    int eventAction;
+
+    //Valor dos Sensores
+    String AccelX, AccelY, AccelZ;
+    String GyroX, GyroY, GyroZ;
+    String MagX, MagY, MagZ;
+    String unixTime, PosX, PosY, Press, Area;
+
+    //Txt da Tela
+    TextView mTxtAccelX, mTxtAccelY, mTxtAccelZ;
+    TextView mTxtGyroX, mTxtGyroY, mTxtGyroZ;
+    TextView mTxtMagX, mTxtMagY, mTxtMagZ;
+    TextView mTxtTime, mTxtPosX, mTxtPosY, mTxtPress, mTxtArea;
+
+    private String GravarArquivo(File Arquivo, String bufferDados, String dados, boolean Buffer){
+        if(bufferDados.length() + dados.length() > STRING_MAX_SIZE || Buffer == false) {
+            try {
+                FileOutputStream fOut = new FileOutputStream(Arquivo, true);
+                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                myOutWriter.write(bufferDados + dados);
+                myOutWriter.flush();
+                myOutWriter.close();
+                fOut.close();
+                bufferDados = "";
+                Log.i("Diego", "File Writen");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not write on file");
+            }
+        }else {
+            bufferDados = bufferDados + dados;
+            Log.i("Diego", Integer.toString(bufferDados.length() + dados.length()));
+        }
+        return bufferDados;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensors);
+
+        //Txts da Tela
+        mTxtAccelX = (TextView) findViewById(R.id.TxtAccelX);
+        mTxtAccelY = (TextView) findViewById(R.id.TxtAccelY);
+        mTxtAccelZ = (TextView) findViewById(R.id.TxtAccelZ);
+
+        mTxtGyroX = (TextView) findViewById(R.id.TxtGyroX);
+        mTxtGyroY = (TextView) findViewById(R.id.TxtGyroY);
+        mTxtGyroZ = (TextView) findViewById(R.id.TxtGyroZ);
+
+        mTxtMagX = (TextView) findViewById(R.id.TxtMagX);
+        mTxtMagY = (TextView) findViewById(R.id.TxtMagY);
+        mTxtMagZ = (TextView) findViewById(R.id.TxtMagZ);
+
+        mTxtTime = (TextView) findViewById(R.id.TxtTime);
+        mTxtPosX = (TextView) findViewById(R.id.TxtPosX);
+        mTxtPosY = (TextView) findViewById(R.id.TxtPosY);
+        mTxtPress = (TextView) findViewById(R.id.TxtPress);
+        mTxtArea = (TextView) findViewById(R.id.TxtArea);
+
+
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -41,30 +112,73 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         mSensorManager.registerListener(this, mAccelerometer, 100000000);
         mSensorManager.registerListener(this, mGyroscope, 100000000);
         mSensorManager.registerListener(this, mMagnetometer, 100000000);
+
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        if(!AccelerometerFile.exists()){
+           try {
+               AccelerometerFile.createNewFile();
+               Log.i("Diego", "AccelerometerFilee Created");
+           } catch (Exception e) {
+               Log.e("Diego", "Could not create AccelerometerFile",e);
+           }
+        }
+
+        if(!GyroscopeFile.exists()){
+            try {
+                GyroscopeFile.createNewFile();
+                Log.i("Diego", "GyroscopeFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create GyroscopeFile",e);
+            }
+        }
+
+        if(!MagnetometerFile.exists()){
+            try {
+                MagnetometerFile.createNewFile();
+                Log.i("Diego", "MagnetometerFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create MagnetometerFile",e);
+            }
+
+        }if(!TouchEventFile.exists()){
+            try {
+                TouchEventFile.createNewFile();
+                Log.i("Diego", "TouchEventFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create TouchEventFile",e);
+            }
+        }
+
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
-        int eventAction = event.getAction();
-        if (eventAction == MotionEvent.ACTION_DOWN){
-            String unixTime = "UnixT: " + Long.toString(System.currentTimeMillis());
-            String PosX = "PosX: " + Float.toString(event.getX());
-            String PosY = "PosY: " + Float.toString(event.getY());
-            String Press = "Press: " + Float.toString(event.getPressure());
-            String Area = "Area: " + Float.toString(event.getSize());
+        eventAction = event.getAction();
+        if (eventAction == MotionEvent.ACTION_DOWN || eventAction == MotionEvent.ACTION_UP ||
+            eventAction == MotionEvent.ACTION_POINTER_DOWN || eventAction == MotionEvent.ACTION_POINTER_UP ||
+            eventAction == MotionEvent.ACTION_MOVE){
+            unixTime = Long.toString(System.currentTimeMillis());
+            PosX = Float.toString(event.getX());
+            PosY = Float.toString(event.getY());
+            Press = Float.toString(event.getPressure());
+            Area = Float.toString(event.getSize());
 
-            TextView mTxtTime = (TextView) findViewById(R.id.TxtTime);
-            TextView mTxtPosX = (TextView) findViewById(R.id.TxtPosX);
-            TextView mTxtPosY = (TextView) findViewById(R.id.TxtPosY);
-            TextView mTxtPress = (TextView) findViewById(R.id.TxtPress);
-            TextView mTxtArea = (TextView) findViewById(R.id.TxtArea);
+            mTxtTime.setText("UnixT: " + unixTime);
+            mTxtPosX.setText("PosX: " + PosX);
+            mTxtPosY.setText("PosY: " + PosY);
+            mTxtPress.setText("Press: " + Press);
+            mTxtArea.setText("Area: " + Area);
 
-            mTxtTime.setText(unixTime);
-            mTxtPosX.setText(PosX);
-            mTxtPosY.setText(PosY);
-            mTxtPress.setText(Press);
-            mTxtArea.setText(Area);
-            Log.i("Diego", "Teste");
+            //Escrever no Arquivo
+            BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + "123" + ',' + "123" + ','
+                    + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
+                    + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
+
+            Log.i("Diego", "Touch");
         }
         return true;
     }
@@ -87,77 +201,51 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
     }
 
     public void onSensorChanged(SensorEvent event) {
-        int SensorType = event.sensor.getType();
-        String unixTime = Long.toString(System.currentTimeMillis());
-
-        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        int PhoneOrientation = display.getRotation();
+        SensorType = event.sensor.getType();
+        unixTime = Long.toString(System.currentTimeMillis());
+        display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        PhoneOrientation = display.getRotation();
 
         if (SensorType == Sensor.TYPE_ACCELEROMETER){
+            AccelX = Float.toString(event.values[0]);
+            AccelY = Float.toString(event.values[1]);
+            AccelZ = Float.toString(event.values[2]);
 
-            String AccelX = Float.toString(event.values[0]);
-            String AccelY = Float.toString(event.values[1]);
-            String AccelZ = Float.toString(event.values[2]);
+            mTxtAccelX.setText("AccX: "  + AccelX);
+            mTxtAccelY.setText("AccY: " + AccelY);
+            mTxtAccelZ.setText("AccZ: " + AccelZ);
 
-            String txtAccelX = "AccX: " + AccelX;
-            String txtAccelY = "AccY: " + AccelY;
-            String txtAccelZ = "AccZ: " + AccelZ;
-
-            TextView mTxtAccelX = (TextView) findViewById(R.id.TxtAccelX);
-            TextView mTxtAccelY = (TextView) findViewById(R.id.TxtAccelY);
-            TextView mTxtAccelZ = (TextView) findViewById(R.id.TxtAccelZ);
-
-            mTxtAccelX.setText(txtAccelX);
-            mTxtAccelY.setText(txtAccelY);
-            mTxtAccelZ.setText(txtAccelZ);
-
-            File myFile = new File("/sdcard/mysdfile.txt");
-            if(!myFile.exists()){
-               try {
-                   myFile.createNewFile();
-                   Log.i("Diego", "File Created");
-               } catch (Exception e) {
-                   Log.e("ERR", "Could not create file",e);
-               }
-            }
-            try {
-                FileOutputStream fOut = new FileOutputStream(myFile,true);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                myOutWriter.write(unixTime + ',' + "123" + ',' + "123" + ','
-                        + AccelX + ',' + AccelY + ',' + AccelZ + ','
-                        + PhoneOrientation + '\n');
-                myOutWriter.flush();
-                myOutWriter.close();
-                fOut.close();
-                Log.i("Diego", "File Writen");
-            } catch(Exception e) {
-                Log.e("ERRR", "Could not write on file");
-            }
+            //Gravacao dos Dados no Arquivo
+            BufferAccel = GravarArquivo(AccelerometerFile, BufferAccel,unixTime + ',' + "123" + ',' + "123" + ','
+                    + AccelX + ',' + AccelY + ',' + AccelZ + ','
+                    + PhoneOrientation + '\n', true);
 
         }else if(SensorType == Sensor.TYPE_GYROSCOPE){
-            String GyroX = "GyrX: " + Float.toString(event.values[0]);
-            String GyroY = "GyrY: " + Float.toString(event.values[1]);
-            String GyroZ = "GyrZ: " + Float.toString(event.values[2]);
+            GyroX = Float.toString(event.values[0]);
+            GyroY = Float.toString(event.values[1]);
+            GyroZ = Float.toString(event.values[2]);
 
-            TextView mTxtGyroX = (TextView) findViewById(R.id.TxtGyroX);
-            TextView mTxtGyroY = (TextView) findViewById(R.id.TxtGyroY);
-            TextView mTxtGyroZ = (TextView) findViewById(R.id.TxtGyroZ);
+            mTxtGyroX.setText("GyrX: " + GyroX);
+            mTxtGyroY.setText("GyrY: " + GyroY);
+            mTxtGyroZ.setText("GyrZ: " + GyroZ);
 
-            mTxtGyroX.setText(GyroX);
-            mTxtGyroY.setText(GyroY);
-            mTxtGyroZ.setText(GyroZ);
+            BufferGyro = GravarArquivo(GyroscopeFile, BufferGyro,unixTime + ',' + "123" + ',' + "123" + ','
+                    + GyroX + ',' + GyroY + ',' + GyroZ + ','
+                    + PhoneOrientation + '\n', true);
+
+
         }else if(SensorType == Sensor.TYPE_MAGNETIC_FIELD){
-            String MagX = "MagX: " + Float.toString(event.values[0]);
-            String MagY = "MagY: " + Float.toString(event.values[1]);
-            String MagZ = "MagZ: " + Float.toString(event.values[2]);
+            MagX = Float.toString(event.values[0]);
+            MagY = Float.toString(event.values[1]);
+            MagZ = Float.toString(event.values[2]);
 
-            TextView mTxtMagX = (TextView) findViewById(R.id.TxtMagX);
-            TextView mTxtMagY = (TextView) findViewById(R.id.TxtMagY);
-            TextView mTxtMagZ = (TextView) findViewById(R.id.TxtMagZ);
+            mTxtMagX.setText("MagX: " + MagX);
+            mTxtMagY.setText("MagY: " + MagY);
+            mTxtMagZ.setText("MagZ: " + MagZ);
 
-            mTxtMagX.setText(MagX);
-            mTxtMagY.setText(MagY);
-            mTxtMagZ.setText(MagZ);
+            BufferMag = GravarArquivo(MagnetometerFile, BufferMag,unixTime + ',' + "123" + ',' + "123" + ','
+                    + MagX + ',' + MagY + ',' + MagZ + ','
+                    + PhoneOrientation + '\n', true);
         }
     }
 }
