@@ -1,8 +1,13 @@
 package pignus.aegis;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.SensorEventListener;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.Surface;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import android.hardware.SensorManager;
@@ -12,6 +17,11 @@ import android.hardware.SensorEvent;
 import android.view.MotionEvent;
 
 import android.util.Log;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.sql.Time;
 
 public class SensorsActivity extends AppCompatActivity implements SensorEventListener{
     private  SensorManager mSensorManager;
@@ -54,6 +64,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
             mTxtPosY.setText(PosY);
             mTxtPress.setText(Press);
             mTxtArea.setText(Area);
+            Log.i("Diego", "Teste");
         }
         return true;
     }
@@ -77,19 +88,51 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
 
     public void onSensorChanged(SensorEvent event) {
         int SensorType = event.sensor.getType();
+        String unixTime = Long.toString(System.currentTimeMillis());
+
+        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        int PhoneOrientation = display.getRotation();
 
         if (SensorType == Sensor.TYPE_ACCELEROMETER){
-            String AccelX = "AccX: " + Float.toString(event.values[0]);
-            String AccelY = "AccY: " + Float.toString(event.values[1]);
-            String AccelZ = "AccZ: " + Float.toString(event.values[2]);
+
+            String AccelX = Float.toString(event.values[0]);
+            String AccelY = Float.toString(event.values[1]);
+            String AccelZ = Float.toString(event.values[2]);
+
+            String txtAccelX = "AccX: " + AccelX;
+            String txtAccelY = "AccY: " + AccelY;
+            String txtAccelZ = "AccZ: " + AccelZ;
 
             TextView mTxtAccelX = (TextView) findViewById(R.id.TxtAccelX);
             TextView mTxtAccelY = (TextView) findViewById(R.id.TxtAccelY);
             TextView mTxtAccelZ = (TextView) findViewById(R.id.TxtAccelZ);
 
-            mTxtAccelX.setText(AccelX);
-            mTxtAccelY.setText(AccelY);
-            mTxtAccelZ.setText(AccelZ);
+            mTxtAccelX.setText(txtAccelX);
+            mTxtAccelY.setText(txtAccelY);
+            mTxtAccelZ.setText(txtAccelZ);
+
+            File myFile = new File("/sdcard/mysdfile.txt");
+            if(!myFile.exists()){
+               try {
+                   myFile.createNewFile();
+                   Log.i("Diego", "File Created");
+               } catch (Exception e) {
+                   Log.e("ERR", "Could not create file",e);
+               }
+            }
+            try {
+                FileOutputStream fOut = new FileOutputStream(myFile,true);
+                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                myOutWriter.write(unixTime + ',' + "123" + ',' + "123" + ','
+                        + AccelX + ',' + AccelY + ',' + AccelZ + ','
+                        + PhoneOrientation + '\n');
+                myOutWriter.flush();
+                myOutWriter.close();
+                fOut.close();
+                Log.i("Diego", "File Writen");
+            } catch(Exception e) {
+                Log.e("ERRR", "Could not write on file");
+            }
 
         }else if(SensorType == Sensor.TYPE_GYROSCOPE){
             String GyroX = "GyrX: " + Float.toString(event.values[0]);
