@@ -6,156 +6,146 @@
     android:layout_height="match_parent"
     tools:context=".SensorsActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/TxtMagX"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
         android:text="TxtMagX"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TxtGyroZ" />
+        android:layout_below="@id/TxtGyroZ"
+        android:layout_alignRight="@id/TxtGyroZ"
+        />
 
     <TextView
         android:id="@+id/TxtMagY"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
         android:text="TxtMagY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TxtMagX" />
+        android:layout_below="@id/TxtMagX"
+        android:layout_alignRight="@id/TxtMagX"
+        />
 
     <TextView
         android:id="@+id/TxtMagZ"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
         android:text="TxtMagZ"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TxtMagY" />
+        android:layout_below="@id/TxtMagY"
+        android:layout_alignRight="@id/TxtMagY"
+        />
 
     <TextView
         android:id="@+id/TxtPosY"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:text="TxtPosY"
-        app:layout_constraintBottom_toTopOf="@+id/TxtArea"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_alignRight="@id/TxtArea"
+        android:layout_above="@id/TxtArea"
+        />
 
     <TextView
         android:id="@+id/TxtArea"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="TxtAccelZ"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:text="TxtArea"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        />
 
     <TextView
         android:id="@+id/TxtPosX"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:text="TxtPosX"
-        app:layout_constraintBottom_toTopOf="@+id/TxtPress"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_above="@id/TxtPress"
+        android:layout_alignRight="@id/TxtPress"
+        />
 
     <TextView
         android:id="@+id/TxtPress"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:text="TxtPress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        />
 
     <TextView
         android:id="@+id/TxtTime"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:text="TxtTime"
-        app:layout_constraintBottom_toTopOf="@+id/TxtPosX"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_above="@id/TxtPosX"
+        android:layout_alignRight="@id/TxtPosX"
+        />
 
     <TextView
         android:id="@+id/TxtGyroY"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
         android:text="TxtGyroY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TxtGyroX" />
+        android:layout_below="@id/TxtGyroX"
+        android:layout_alignRight="@id/TxtGyroX"
+        />
 
     <TextView
         android:id="@+id/TxtGyroZ"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
         android:text="TxtGyroZ"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TxtGyroY" />
+        android:layout_below="@id/TxtGyroY"
+        android:layout_alignRight="@id/TxtGyroY"
+        />
 
     <TextView
         android:id="@+id/TxtGyroX"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:text="TxtGyroX"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="16dp" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        />
 
     <TextView
         android:id="@+id/TxtAccelX"
-        android:layout_width="168dp"
-        android:layout_height="43dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:text="TxtAccelX"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="16dp" />
+        android:layout_width="168dp"
+        android:layout_height="42dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        />
 
     <TextView
         android:id="@+id/TxtAccelY"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="TxtAccelY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TxtAccelX" />
+        android:layout_below="@id/TxtAccelX"
+        android:layout_alignLeft="@id/TxtAccelX"
+         />
 
     <TextView
         android:id="@+id/TxtAccelZ"
         android:layout_width="168dp"
         android:layout_height="42dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="TxtAccelZ"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TxtAccelY" />
+        android:layout_below="@id/TxtAccelY"
+        android:layout_alignLeft="@id/TxtAccelY"
+        />
+
+    <Button
+        android:id="@+id/btnEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Finalizar Leitura"
+        android:layout_above="@id/TxtPosY"
+        android:layout_alignParentRight="true"
+
+        />
+
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

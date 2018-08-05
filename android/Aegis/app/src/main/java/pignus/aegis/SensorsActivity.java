@@ -1,6 +1,7 @@
 package pignus.aegis;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.hardware.SensorEventListener;
 import android.os.Environment;
@@ -8,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import android.hardware.SensorManager;
@@ -152,6 +155,18 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
             }
         }
 
+        final Button button = findViewById(R.id.btnEnd);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.i("Diego", "Button Pressed");
+                BufferAccel = GravarArquivo(AccelerometerFile,BufferAccel,"", false);
+                BufferMag = GravarArquivo(MagnetometerFile,BufferMag,"", false);
+                BufferGyro = GravarArquivo(GyroscopeFile,BufferGyro,"", false);
+                BufferTouch = GravarArquivo(TouchEventFile, BufferTouch, "", false);
+                Intent intent = new Intent(getBaseContext(), EndActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
