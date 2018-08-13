@@ -2,16 +2,18 @@ package pignus.aegis;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.hardware.SensorEventListener;
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Display;
-import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import android.hardware.SensorManager;
@@ -25,17 +27,17 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.sql.Time;
 
 public class SensorsActivity extends AppCompatActivity implements SensorEventListener{
     private final static int STRING_MAX_SIZE = 10000;
-    String Folder = "123";
+    String Folder = "aegis";
     File folder = new File(Environment.getExternalStorageDirectory() + File.separator + Folder);
 
     String BufferAccel = "";
     String BufferGyro = "";
     String BufferMag = "";
     String BufferTouch = "";
+
 
     File AccelerometerFile = new File("/sdcard/" + Folder + "/Accelerometer.csv");
     File GyroscopeFile = new File("/sdcard/" + Folder + "/Gyroscope.csv");
@@ -56,6 +58,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
     String unixTime, PosX, PosY, Press, Area;
 
     //Txt da Tela
+    EditText textBox;
     TextView mTxtAccelX, mTxtAccelY, mTxtAccelZ;
     TextView mTxtGyroX, mTxtGyroY, mTxtGyroZ;
     TextView mTxtMagX, mTxtMagY, mTxtMagZ;
@@ -86,6 +89,10 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensors);
+
+        //Txtbox editavel da tela
+        textBox = (EditText) findViewById(R.id.editText);
+
 
         //Txts da Tela
         mTxtAccelX = (TextView) findViewById(R.id.TxtAccelX);
@@ -193,7 +200,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
                     + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
                     + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
 
-            Log.i("Diego", "Touch");
+            Log.i("Diego", "Tocado");
         }
         return true;
     }
@@ -205,6 +212,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, 100000000);
         mSensorManager.registerListener(this, mGyroscope, 100000000);
+        mSensorManager.registerListener(this, mMagnetometer, 100000000);
     }
 
     protected void onPause() {
@@ -263,5 +271,8 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
                     + PhoneOrientation + '\n', true);
         }
     }
+
+
+
 }
 

@@ -8,143 +8,144 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/TxtMagX"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtMagX"
-        android:layout_below="@id/TxtGyroZ"
-        android:layout_alignRight="@id/TxtGyroZ"
-        />
+        <TextView
+            android:id="@+id/TxtMagX"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignRight="@id/TxtGyroZ"
+            android:layout_below="@id/TxtGyroZ"
+            android:text="TxtMagX" />
 
-    <TextView
-        android:id="@+id/TxtMagY"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtMagY"
-        android:layout_below="@id/TxtMagX"
-        android:layout_alignRight="@id/TxtMagX"
-        />
+        <TextView
+            android:id="@+id/TxtMagY"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignRight="@id/TxtMagX"
+            android:layout_below="@id/TxtMagX"
+            android:text="TxtMagY" />
 
-    <TextView
-        android:id="@+id/TxtMagZ"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtMagZ"
-        android:layout_below="@id/TxtMagY"
-        android:layout_alignRight="@id/TxtMagY"
-        />
+        <TextView
+            android:id="@+id/TxtMagZ"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignRight="@id/TxtMagY"
+            android:layout_below="@id/TxtMagY"
+            android:text="TxtMagZ" />
 
-    <TextView
-        android:id="@+id/TxtPosY"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtPosY"
-        android:layout_alignRight="@id/TxtArea"
-        android:layout_above="@id/TxtArea"
-        />
+        <TextView
+            android:id="@+id/TxtPosY"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_above="@id/TxtArea"
+            android:layout_alignRight="@id/TxtArea"
+            android:text="TxtPosY" />
 
-    <TextView
-        android:id="@+id/TxtArea"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtArea"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        />
+        <TextView
+            android:id="@+id/TxtArea"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:text="TxtArea" />
 
-    <TextView
-        android:id="@+id/TxtPosX"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtPosX"
-        android:layout_above="@id/TxtPress"
-        android:layout_alignRight="@id/TxtPress"
-        />
+        <TextView
+            android:id="@+id/TxtPosX"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_above="@id/TxtPress"
+            android:layout_alignRight="@id/TxtPress"
+            android:text="TxtPosX" />
 
-    <TextView
-        android:id="@+id/TxtPress"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtPress"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        />
+        <TextView
+            android:id="@+id/TxtPress"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:text="TxtPress" />
 
-    <TextView
-        android:id="@+id/TxtTime"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtTime"
-        android:layout_above="@id/TxtPosX"
-        android:layout_alignRight="@id/TxtPosX"
-        />
+        <TextView
+            android:id="@+id/TxtTime"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_above="@id/TxtPosX"
+            android:layout_alignRight="@id/TxtPosX"
+            android:text="TxtTime" />
 
-    <TextView
-        android:id="@+id/TxtGyroY"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtGyroY"
-        android:layout_below="@id/TxtGyroX"
-        android:layout_alignRight="@id/TxtGyroX"
-        />
+        <TextView
+            android:id="@+id/TxtGyroY"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignRight="@id/TxtGyroX"
+            android:layout_below="@id/TxtGyroX"
+            android:text="TxtGyroY" />
 
-    <TextView
-        android:id="@+id/TxtGyroZ"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtGyroZ"
-        android:layout_below="@id/TxtGyroY"
-        android:layout_alignRight="@id/TxtGyroY"
-        />
+        <TextView
+            android:id="@+id/TxtGyroZ"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignRight="@id/TxtGyroY"
+            android:layout_below="@id/TxtGyroY"
+            android:text="TxtGyroZ" />
 
-    <TextView
-        android:id="@+id/TxtGyroX"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtGyroX"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        />
+        <TextView
+            android:id="@+id/TxtGyroX"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="TxtGyroX" />
 
-    <TextView
-        android:id="@+id/TxtAccelX"
-        android:text="TxtAccelX"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        />
+        <TextView
+            android:id="@+id/TxtAccelX"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="TxtAccelX" />
 
-    <TextView
-        android:id="@+id/TxtAccelY"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtAccelY"
-        android:layout_below="@id/TxtAccelX"
-        android:layout_alignLeft="@id/TxtAccelX"
-         />
+        <TextView
+            android:id="@+id/TxtAccelY"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignLeft="@id/TxtAccelX"
+            android:layout_below="@id/TxtAccelX"
+            android:text="TxtAccelY" />
 
-    <TextView
-        android:id="@+id/TxtAccelZ"
-        android:layout_width="168dp"
-        android:layout_height="42dp"
-        android:text="TxtAccelZ"
-        android:layout_below="@id/TxtAccelY"
-        android:layout_alignLeft="@id/TxtAccelY"
-        />
+        <TextView
+            android:id="@+id/TxtAccelZ"
+            android:layout_width="168dp"
+            android:layout_height="42dp"
+            android:layout_alignLeft="@id/TxtAccelY"
+            android:layout_below="@id/TxtAccelY"
+            android:text="TxtAccelZ" />
 
-    <Button
-        android:id="@+id/btnEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Finalizar Leitura"
-        android:layout_above="@id/TxtPosY"
-        android:layout_alignParentRight="true"
+        <Button
+            android:id="@+id/btnEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/TxtPosY"
 
-        />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="Finalizar Leitura" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/TxtMagX"
+            android:ems="10"
+            android:hint="@string/text_box"
+            android:inputType="textMultiLine" />
 
     </RelativeLayout>
 
