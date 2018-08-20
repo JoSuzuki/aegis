@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/TxtPosY"
-
+            android:elevation="0dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:text="Finalizar Leitura" />
@@ -146,6 +146,17 @@
             android:ems="10"
             android:hint="@string/text_box"
             android:inputType="textMultiLine" />
+
+        <android.inputmethodservice.KeyboardView
+            android:id="@+id/keyboardview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:focusable="true"
+            android:elevation="10dp"
+            android:layout_alignParentBottom="true"
+            android:focusableInTouchMode="true"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

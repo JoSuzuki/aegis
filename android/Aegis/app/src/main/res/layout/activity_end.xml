@@ -17,25 +17,6 @@
             android:layout_centerInParent="true"
             />
 
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="85dp"
-            android:ems="10"
-            android:hint="@string/text_box"
-            android:inputType="text" />
-
-        <android.inputmethodservice.KeyboardView
-            android:id="@+id/keyboardview"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:focusable="true"
-            android:layout_alignParentBottom="true"
-            android:focusableInTouchMode="true"
-            android:visibility="gone" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

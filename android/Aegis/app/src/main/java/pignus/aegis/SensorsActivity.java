@@ -30,7 +30,7 @@ import java.io.OutputStreamWriter;
 
 public class SensorsActivity extends AppCompatActivity implements SensorEventListener{
     private final static int STRING_MAX_SIZE = 10000;
-    String Folder = "aegis";
+    String Folder = "123";
     File folder = new File(Environment.getExternalStorageDirectory() + File.separator + Folder);
 
     String BufferAccel = "";
@@ -38,6 +38,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
     String BufferMag = "";
     String BufferTouch = "";
 
+    CollectorKeyboard mCollectorKeyboard;
 
     File AccelerometerFile = new File("/sdcard/" + Folder + "/Accelerometer.csv");
     File GyroscopeFile = new File("/sdcard/" + Folder + "/Gyroscope.csv");
@@ -93,6 +94,9 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         //Txtbox editavel da tela
         textBox = (EditText) findViewById(R.id.editText);
 
+        // Collector keyboard
+        mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard);
+        mCollectorKeyboard.registerEditText(R.id.editText);
 
         //Txts da Tela
         mTxtAccelX = (TextView) findViewById(R.id.TxtAccelX);
@@ -130,7 +134,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         if(!AccelerometerFile.exists()){
            try {
                AccelerometerFile.createNewFile();
-               Log.i("Diego", "AccelerometerFilee Created");
+               Log.i("Diego", "AccelerometerFile Created");
            } catch (Exception e) {
                Log.e("Diego", "Could not create AccelerometerFile",e);
            }
@@ -272,7 +276,9 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         }
     }
 
-
+    @Override public void onBackPressed() {
+        if( mCollectorKeyboard.isCollectorKeyboardVisible() ) mCollectorKeyboard.hideCollectorKeyboard(); else this.finish();
+    }
 
 }
 
