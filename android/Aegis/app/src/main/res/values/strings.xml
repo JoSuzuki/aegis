@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Aegis</string>
+    <string name="title_activity_end">end</string>
+    <string name="text_box">Enter a message</string>
 </resources>
