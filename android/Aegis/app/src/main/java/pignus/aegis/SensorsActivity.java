@@ -30,8 +30,13 @@ import java.io.OutputStreamWriter;
 
 public class SensorsActivity extends AppCompatActivity implements SensorEventListener{
     private final static int STRING_MAX_SIZE = 10000;
-    String Folder = "123";
-    File folder = new File(Environment.getExternalStorageDirectory() + File.separator + Folder);
+    File folder;
+
+    File AccelerometerFile;
+    File GyroscopeFile;
+    File MagnetometerFile;
+    File TouchEventFile;
+
 
     String BufferAccel = "";
     String BufferGyro = "";
@@ -39,11 +44,6 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
     String BufferTouch = "";
 
     CollectorKeyboard mCollectorKeyboard;
-
-    File AccelerometerFile = new File("/sdcard/" + Folder + "/Accelerometer.csv");
-    File GyroscopeFile = new File("/sdcard/" + Folder + "/Gyroscope.csv");
-    File MagnetometerFile = new File("/sdcard/" + Folder + "/Magnetometer.csv");
-    File TouchEventFile = new File("/sdcard/" + Folder + "/TouchEvent.csv");
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer, mGyroscope, mMagnetometer;
@@ -60,6 +60,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
 
     //Txt da Tela
     EditText textBox;
+    TextView mTxtUserName;
     TextView mTxtAccelX, mTxtAccelY, mTxtAccelZ;
     TextView mTxtGyroX, mTxtGyroY, mTxtGyroZ;
     TextView mTxtMagX, mTxtMagY, mTxtMagZ;
@@ -89,16 +90,30 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
         setContentView(R.layout.activity_sensors);
+        String userName = intent.getStringExtra(MainActivity.USER_NAME);
+
+        String Folder = userName;
+        folder = new File(Environment.getExternalStorageDirectory() + File.separator + Folder);
+
+        AccelerometerFile = new File("/sdcard/" + Folder + "/Accelerometer.csv");
+        GyroscopeFile = new File("/sdcard/" + Folder + "/Gyroscope.csv");
+        MagnetometerFile = new File("/sdcard/" + Folder + "/Magnetometer.csv");
+        TouchEventFile = new File("/sdcard/" + Folder + "/TouchEvent.csv");
 
         //Txtbox editavel da tela
         textBox = (EditText) findViewById(R.id.editText);
 
         // Collector keyboard
-        mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard);
+        mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard, userName);
         mCollectorKeyboard.registerEditText(R.id.editText);
 
         //Txts da Tela
+
+        mTxtUserName = (TextView) findViewById(R.id.TxtUserName);
+        mTxtUserName.setText(userName);
+
         mTxtAccelX = (TextView) findViewById(R.id.TxtAccelX);
         mTxtAccelY = (TextView) findViewById(R.id.TxtAccelY);
         mTxtAccelZ = (TextView) findViewById(R.id.TxtAccelZ);

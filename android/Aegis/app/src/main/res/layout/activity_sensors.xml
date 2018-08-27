@@ -126,6 +126,13 @@
             android:layout_below="@id/TxtAccelY"
             android:text="TxtAccelZ" />
 
+        <TextView
+            android:id="@+id/TxtUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/editText"
+            android:text="TextView" />
+
         <Button
             android:id="@+id/btnEnd"
             android:layout_width="wrap_content"

@@ -31,12 +31,12 @@ public class CollectorKeyboard {
 
     private String BufferKeyPress = "";
 
-    String Folder = "123";
-    File folder = new File(Environment.getExternalStorageDirectory() + File.separator + Folder);
+    String Folder;
+    File folder;
 
     private final static int STRING_MAX_SIZE = 10000;
 
-    File KeyPressEventFile = new File("/sdcard/" + Folder + "/KeyPressEvent.csv");
+    File KeyPressEventFile;
 
 
     private String GravarArquivo(File Arquivo, String bufferDados, String dados, boolean Buffer){
@@ -86,6 +86,8 @@ public class CollectorKeyboard {
 
         @Override
         public void onKey(int keyCode, int[] keyCodes) {
+            int DONE = -3;
+            int ENTER = 13;
             View focusCurrent = mHostActivity.getWindow().getCurrentFocus();
             EditText editText = (EditText) focusCurrent;
             Editable editable = editText.getText();
@@ -96,6 +98,10 @@ public class CollectorKeyboard {
                 caps = !caps;
                 mKeyboardView.getKeyboard().setShifted(caps);
                 mKeyboardView.invalidateAllKeys();
+            } else if (keyCode == DONE) {
+                hideCollectorKeyboard();
+            } else if (keyCode == ENTER) {
+                editable.append("/n");
             } else {
                 Character character;
                 if (caps) {
@@ -133,13 +139,17 @@ public class CollectorKeyboard {
         }
     };
 
-    public CollectorKeyboard(Activity host, int viewId, int layoutId) {
+    public CollectorKeyboard(Activity host, int viewId, int layoutId, String folderName) {
         mHostActivity = host;
         mKeyboardView = (KeyboardView) mHostActivity.findViewById(viewId);
         mKeyboardView.setKeyboard(new Keyboard(mHostActivity, layoutId));
         mKeyboardView.setPreviewEnabled(false);
         mKeyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
         mHostActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        Folder = folderName;
+        folder = new File(Environment.getExternalStorageDirectory() + File.separator + Folder);
+        KeyPressEventFile = new File("/sdcard/" + Folder + "/KeyPressEvent.csv");
+
         if (!folder.exists()) {
             folder.mkdirs();
         }
