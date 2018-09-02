@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -49,6 +50,9 @@ public class CollectorKeyboard {
     String Press;
     String Area;
 
+    Display display;
+    int phoneOrientation;
+
     private String GravarArquivo(File Arquivo, String bufferDados, String dados, boolean Buffer){
 
         if(bufferDados.length() + dados.length() > STRING_MAX_SIZE || Buffer == false) {
@@ -78,12 +82,13 @@ public class CollectorKeyboard {
             Log.i("Jo", String.valueOf(keyCode));
             String unixTime = Long.toString(System.currentTimeMillis());
             String pressType = "0";
-            int PhoneOrientation = 0; // 0 is portrait
-
+            display = ((WindowManager) mHostActivity.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            phoneOrientation = display.getRotation();
+            Log.i("Jo", String.valueOf(phoneOrientation));
 
             //Escrever no Arquivo
             BufferKeyPress = GravarArquivo(KeyPressEventFile, BufferKeyPress,unixTime + ',' + "" + ',' + pressType + ','
-                    + "" + ',' + keyCode + ',' + PhoneOrientation + '\n', false);
+                    + "" + ',' + keyCode + ',' + phoneOrientation + '\n', false);
 
 
 
@@ -167,11 +172,14 @@ public class CollectorKeyboard {
                     PosY = Float.toString(event.getY());
                     Press = Float.toString(event.getPressure());
                     Area = Float.toString(event.getSize());
+                    display = ((WindowManager) mHostActivity.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+                    phoneOrientation = display.getRotation(); // 0 is portrait
+                    Log.i("Jo", String.valueOf(phoneOrientation));
 
                     //Escrever no Arquivo
                     BufferKeyboardTouch = GravarArquivo(KeyboardTouchFile, BufferKeyboardTouch,unixTime + ',' + "" + ',' + "" + ','
                             + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
-                            + Press + ',' + Area + ',' + '0' + '\n', false);
+                            + Press + ',' + Area + ',' + phoneOrientation + '\n', false);
 
                     Log.i("Diego", "Toque no teclado");
                 }
