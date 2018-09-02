@@ -21,9 +21,14 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Random;
 
 public class CollectorActivity extends AppCompatActivity implements SensorEventListener{
     private final static int STRING_MAX_SIZE = 10000;
+
+    String[] Perguntas = {"Pergunta 1 Vamos testar se a pergunta é grande demais para caber na tela?","Pergunta 2? Será que essa pergunta é grande demais para caber na tela? Vamos descobrir depois de testar o programa!","Pergunta 3?Por favor, transcreva aqui o último livro da bíblia, conhecido pelo nome de Apocalipse","Pergunta Aleatória 1?","Pergunta Aleatórioa 2?", "Pergunta Aleatória 3?"};
+    int[] PerguntasSelecionadas = new int[3];
+
     File folder;
 
     File AccelerometerFile;
@@ -54,7 +59,9 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
 
     //Txt da Tela
     EditText textBox;
-    TextView mTxtUserName;
+    TextView mTxtQ1;
+    TextView mTxtQ2;
+    TextView mTxtQ3;
 
     private String GravarArquivo(File Arquivo, String bufferDados, String dados, boolean Buffer){
         if(bufferDados.length() + dados.length() > STRING_MAX_SIZE || Buffer == false) {
@@ -93,16 +100,46 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
         TouchEventFile = new File("/sdcard/aegis/" + Folder + "/TouchEvent.csv");
 
         //Txtbox editavel da tela
-        textBox = (EditText) findViewById(R.id.editText);
+        textBox = (EditText) findViewById(R.id.TxtA1);
 
         // Collector keyboard
         mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard, userName);
-        mCollectorKeyboard.registerEditText(R.id.editText);
+        mCollectorKeyboard.registerEditText(R.id.TxtA1);
+        mCollectorKeyboard.registerEditText(R.id.TxtA2);
+        mCollectorKeyboard.registerEditText(R.id.TxtA3);
 
         //Txts da Tela
 
-        mTxtUserName = (TextView) findViewById(R.id.TxtUserName);
-        mTxtUserName.setText(userName);
+        //mTxtUserName = (TextView) findViewById(R.id.TxtUserName);
+        //mTxtUserName.setText(userName);
+        Random r = new Random();
+        int NumSorteado;
+        int i = 0;
+        boolean repetido = false;
+
+        while(i < PerguntasSelecionadas.length){
+            NumSorteado = r.nextInt(Perguntas.length);
+            for(int j = 0; j < i; j++){
+                if(PerguntasSelecionadas[j] == NumSorteado) {
+                    repetido = true;
+                }
+            }
+            if(!repetido){
+                PerguntasSelecionadas[i] = NumSorteado;
+                i++;
+            }
+            repetido = false;
+        }
+
+        mTxtQ1 = (TextView) findViewById(R.id.TxtQ1);
+        mTxtQ1.setText(Perguntas[PerguntasSelecionadas[0]]);
+
+        mTxtQ2 = (TextView) findViewById(R.id.TxtQ2);
+        mTxtQ2.setText(Perguntas[PerguntasSelecionadas[1]]);
+
+        mTxtQ3 = (TextView) findViewById(R.id.TxtQ3);
+        mTxtQ3.setText(Perguntas[PerguntasSelecionadas[2]]);
+
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);

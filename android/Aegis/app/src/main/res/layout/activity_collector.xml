@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="pignus.aegis.CollectorActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,44 +28,88 @@
         app:layout_constraintVertical_bias="0.0">
 
 
-        <TextView
-            android:id="@+id/textView3"
+            <TextView
+                android:id="@+id/TxtQ1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/TxtA1"
+                android:layout_alignStart="@+id/TxtA1"
+                android:layout_marginTop="30dp"
+                android:text="Texto 1" />
+
+            <EditText
+            android:id="@+id/TxtA1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/editText"
-            android:layout_alignStart="@+id/editText"
-            android:layout_marginTop="30dp"
-            android:text="Conte uma história sua " />
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/TxtQ1"
+            android:ems="15"
+            android:minLines="10"
+            android:hint="@string/text_box"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"/>
 
         <TextView
-            android:id="@+id/TxtUserName"
+            android:id="@+id/TxtQ2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/textView3"
-            android:layout_alignBottom="@+id/textView3"
-            android:layout_toEndOf="@+id/textView3"
-            android:layout_toRightOf="@+id/textView3"
-            android:text="TextView" />
+            android:layout_alignLeft="@+id/TxtA1"
+            android:layout_alignStart="@+id/TxtA1"
+            android:layout_below="@id/TxtA1"
+            android:layout_marginTop="60dp"
+            android:text="Texto 2" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/TxtA2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="102dp"
-            android:ems="10"
+            android:layout_below="@id/TxtQ2"
+            android:ems="15"
+            android:minLines="10"
             android:hint="@string/text_box"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"/>
 
-        <Button
-            android:id="@+id/btnEnd"
+        <TextView
+            android:id="@+id/TxtQ3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/TxtA1"
+            android:layout_alignStart="@+id/TxtA1"
+            android:layout_below="@id/TxtA2"
+            android:layout_marginTop="60dp"
+            android:text="Texto 3" />
+
+        <EditText
+            android:id="@+id/TxtA3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="104dp"
-            android:elevation="0dp"
-            android:text="Finalizar Leitura" />
+            android:layout_below="@id/TxtQ3"
+            android:ems="15"
+            android:minLines="10"
+            android:hint="@string/text_box"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"/>
+
+
+            <Button
+                android:id="@+id/btnEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/TxtA3"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="300dp"
+                android:layout_centerHorizontal="true"
+                android:elevation="0dp"
+                android:text="Finalizar Leitura" />
+
+
+    </RelativeLayout>
+
+    </ScrollView>
 
         <android.inputmethodservice.KeyboardView
             android:id="@+id/keyboardview"
@@ -67,6 +123,5 @@
             android:visibility="gone" />
 
     </RelativeLayout>
-
 
 </android.support.constraint.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Environment;
 import android.text.Editable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -227,6 +228,10 @@ public class CollectorKeyboard {
     public void registerEditText(int resourceId) {
         // Find the editText resourceId
         EditText editText = (EditText) mHostActivity.findViewById(resourceId);
+        editText.setShowSoftInputOnFocus(false);
+        //editText.setRawInputType(InputType.TYPE_NULL);
+        //editText.setTextIsSelectable(true);
+
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
