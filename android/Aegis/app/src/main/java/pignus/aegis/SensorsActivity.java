@@ -3,12 +3,9 @@ package pignus.aegis;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorEventListener;
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -103,11 +100,11 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         TouchEventFile = new File("/sdcard/aegis/" + Folder + "/TouchEvent.csv");
 
         //Txtbox editavel da tela
-        textBox = (EditText) findViewById(R.id.editText);
+        textBox = (EditText) findViewById(R.id.TxtA1);
 
         // Collector keyboard
         mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard, userName);
-        mCollectorKeyboard.registerEditText(R.id.editText);
+        mCollectorKeyboard.registerEditText(R.id.TxtA1);
 
         //Txts da Tela
 
