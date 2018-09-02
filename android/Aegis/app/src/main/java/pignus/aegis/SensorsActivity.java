@@ -95,12 +95,12 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         String userName = intent.getStringExtra(MainActivity.USER_NAME);
 
         String Folder = userName;
-        folder = new File(Environment.getExternalStorageDirectory() + File.separator + Folder);
+        folder = new File(Environment.getExternalStorageDirectory() + File.separator + "aegis" + File.separator + Folder);
 
-        AccelerometerFile = new File("/sdcard/" + Folder + "/Accelerometer.csv");
-        GyroscopeFile = new File("/sdcard/" + Folder + "/Gyroscope.csv");
-        MagnetometerFile = new File("/sdcard/" + Folder + "/Magnetometer.csv");
-        TouchEventFile = new File("/sdcard/" + Folder + "/TouchEvent.csv");
+        AccelerometerFile = new File("/sdcard/aegis/" + Folder + "/Accelerometer.csv");
+        GyroscopeFile = new File("/sdcard/aegis/" + Folder + "/Gyroscope.csv");
+        MagnetometerFile = new File("/sdcard/aegis/" + Folder + "/Magnetometer.csv");
+        TouchEventFile = new File("/sdcard/aegis/" + Folder + "/TouchEvent.csv");
 
         //Txtbox editavel da tela
         textBox = (EditText) findViewById(R.id.editText);
@@ -182,15 +182,43 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         }
 
         final Button button = findViewById(R.id.btnEnd);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Log.i("Diego", "Button Pressed");
-                BufferAccel = GravarArquivo(AccelerometerFile,BufferAccel,"", false);
-                BufferMag = GravarArquivo(MagnetometerFile,BufferMag,"", false);
-                BufferGyro = GravarArquivo(GyroscopeFile,BufferGyro,"", false);
-                BufferTouch = GravarArquivo(TouchEventFile, BufferTouch, "", false);
-                Intent intent = new Intent(getBaseContext(), EndActivity.class);
-                startActivity(intent);
+        button.setOnTouchListener(new View.OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event) {
+                eventAction = event.getAction();
+                unixTime = Long.toString(System.currentTimeMillis());
+                if (eventAction == MotionEvent.ACTION_DOWN || eventAction == MotionEvent.ACTION_POINTER_DOWN ||
+                        eventAction == MotionEvent.ACTION_MOVE){
+                    PosX = Float.toString(event.getX());
+                    PosY = Float.toString(event.getY());
+                    Press = Float.toString(event.getPressure());
+                    Area = Float.toString(event.getSize());
+
+                    //Escrever no Arquivo
+                    BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + "" + ',' + "" + ','
+                            + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
+                            + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
+
+                    Log.i("Diego", "Button start press");
+                    return true;
+                } else if (eventAction == MotionEvent.ACTION_UP || eventAction == MotionEvent.ACTION_POINTER_UP ) {
+                    PosX = Float.toString(event.getX());
+                    PosY = Float.toString(event.getY());
+                    Press = Float.toString(event.getPressure());
+                    Area = Float.toString(event.getSize());
+
+                    //Escrever no Arquivo
+                    BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + "" + ',' + "" + ','
+                            + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
+                            + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
+                    BufferAccel = GravarArquivo(AccelerometerFile,BufferAccel,"", false);
+                    BufferMag = GravarArquivo(MagnetometerFile,BufferMag,"", false);
+                    BufferGyro = GravarArquivo(GyroscopeFile,BufferGyro,"", false);
+                    Intent intent = new Intent(getBaseContext(), EndActivity.class);
+                    startActivity(intent);
+                    Log.i("Diego", "Button Pressed");
+                    return true;
+                }
+                return true;
             }
         });
 
@@ -215,7 +243,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
             mTxtArea.setText("Area: " + Area);
 
             //Escrever no Arquivo
-            BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + "123" + ',' + "123" + ','
+            BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + "" + ',' + "" + ','
                     + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
                     + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
 
@@ -258,7 +286,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
             mTxtAccelZ.setText("AccZ: " + AccelZ);
 
             //Gravacao dos Dados no Arquivo
-            BufferAccel = GravarArquivo(AccelerometerFile, BufferAccel,unixTime + ',' + "123" + ',' + "123" + ','
+            BufferAccel = GravarArquivo(AccelerometerFile, BufferAccel,unixTime + ',' + "" + ',' + "" + ','
                     + AccelX + ',' + AccelY + ',' + AccelZ + ','
                     + PhoneOrientation + '\n', true);
 
@@ -271,7 +299,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
             mTxtGyroY.setText("GyrY: " + GyroY);
             mTxtGyroZ.setText("GyrZ: " + GyroZ);
 
-            BufferGyro = GravarArquivo(GyroscopeFile, BufferGyro,unixTime + ',' + "123" + ',' + "123" + ','
+            BufferGyro = GravarArquivo(GyroscopeFile, BufferGyro,unixTime + ',' + "" + ',' + "" + ','
                     + GyroX + ',' + GyroY + ',' + GyroZ + ','
                     + PhoneOrientation + '\n', true);
 
@@ -285,7 +313,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
             mTxtMagY.setText("MagY: " + MagY);
             mTxtMagZ.setText("MagZ: " + MagZ);
 
-            BufferMag = GravarArquivo(MagnetometerFile, BufferMag,unixTime + ',' + "123" + ',' + "123" + ','
+            BufferMag = GravarArquivo(MagnetometerFile, BufferMag,unixTime + ',' + "" + ',' + "" + ','
                     + MagX + ',' + MagY + ',' + MagZ + ','
                     + PhoneOrientation + '\n', true);
         }

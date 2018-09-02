@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.text.Editable;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -30,6 +31,7 @@ public class CollectorKeyboard {
     private boolean caps = false;
 
     private String BufferKeyPress = "";
+    private String BufferKeyboardTouch = "";
 
     String Folder;
     File folder;
@@ -37,7 +39,14 @@ public class CollectorKeyboard {
     private final static int STRING_MAX_SIZE = 10000;
 
     File KeyPressEventFile;
+    File KeyboardTouchFile;
 
+    int eventAction;
+    String unixTime;
+    String PosX;
+    String PosY;
+    String Press;
+    String Area;
 
     private String GravarArquivo(File Arquivo, String bufferDados, String dados, boolean Buffer){
 
@@ -62,6 +71,7 @@ public class CollectorKeyboard {
     }
 
     private KeyboardView.OnKeyboardActionListener mOnKeyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
+
         @Override
         public void onPress(int keyCode) {
             Log.i("Jo", String.valueOf(keyCode));
@@ -71,8 +81,8 @@ public class CollectorKeyboard {
 
 
             //Escrever no Arquivo
-            BufferKeyPress = GravarArquivo(KeyPressEventFile, BufferKeyPress,unixTime + ',' + "123" + ',' + pressType + ','
-                    + "123" + ',' + keyCode + ',' + PhoneOrientation + '\n', false);
+            BufferKeyPress = GravarArquivo(KeyPressEventFile, BufferKeyPress,unixTime + ',' + "" + ',' + pressType + ','
+                    + "" + ',' + keyCode + ',' + PhoneOrientation + '\n', false);
 
 
 
@@ -144,11 +154,35 @@ public class CollectorKeyboard {
         mKeyboardView = (KeyboardView) mHostActivity.findViewById(viewId);
         mKeyboardView.setKeyboard(new Keyboard(mHostActivity, layoutId));
         mKeyboardView.setPreviewEnabled(false);
+        mKeyboardView.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                eventAction = event.getAction();
+                if (eventAction == MotionEvent.ACTION_DOWN || eventAction == MotionEvent.ACTION_UP ||
+                        eventAction == MotionEvent.ACTION_POINTER_DOWN || eventAction == MotionEvent.ACTION_POINTER_UP ||
+                        eventAction == MotionEvent.ACTION_MOVE){
+                    unixTime = Long.toString(System.currentTimeMillis());
+                    PosX = Float.toString(event.getX());
+                    PosY = Float.toString(event.getY());
+                    Press = Float.toString(event.getPressure());
+                    Area = Float.toString(event.getSize());
+
+                    //Escrever no Arquivo
+                    BufferKeyboardTouch = GravarArquivo(KeyboardTouchFile, BufferKeyboardTouch,unixTime + ',' + "" + ',' + "" + ','
+                            + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
+                            + Press + ',' + Area + ',' + '0' + '\n', false);
+
+                    Log.i("Diego", "Toque no teclado");
+                }
+                return false;
+            }
+        });
         mKeyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
         mHostActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Folder = folderName;
-        folder = new File(Environment.getExternalStorageDirectory() + File.separator + Folder);
-        KeyPressEventFile = new File("/sdcard/" + Folder + "/KeyPressEvent.csv");
+        folder = new File(Environment.getExternalStorageDirectory() + File.separator + "aegis" + File.separator + Folder);
+        KeyPressEventFile = new File("/sdcard/aegis/" + Folder + "/KeyPressEvent.csv");
+        KeyboardTouchFile = new File ("/sdcard/aegis/" + Folder + "/KeyboardTouchEvent.csv");
 
         if (!folder.exists()) {
             folder.mkdirs();
@@ -159,6 +193,14 @@ public class CollectorKeyboard {
                 Log.i("Diego", "KeyPressEventFile Created");
             } catch (Exception e) {
                 Log.e("Diego", "Could not create KeyPressEventFile",e);
+            }
+        }
+        if(!KeyboardTouchFile.exists()){
+            try {
+                KeyboardTouchFile.createNewFile();
+                Log.i("Diego", "KeyboardTouchFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create KeyboardTouchFile",e);
             }
         }
 
