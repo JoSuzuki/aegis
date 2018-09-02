@@ -2,6 +2,7 @@ package pignus.aegis;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Environment;
@@ -214,6 +215,15 @@ public class CollectorKeyboard {
         }
 
 
+    }
+
+    public void updateCollectorKeyboardLayout(int configOrientation) {
+        if (configOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mKeyboardView.setKeyboard(new Keyboard(mHostActivity, R.xml.collector_keyboard_landscape));
+        } else if (configOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            mKeyboardView.setKeyboard(new Keyboard(mHostActivity, R.xml.collector_keyboard));
+        }
+        mKeyboardView.invalidateAllKeys();
     }
 
     public boolean isCollectorKeyboardVisible() {
