@@ -2,6 +2,7 @@ package pignus.aegis;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -13,6 +14,8 @@ import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +29,27 @@ import java.util.Random;
 public class CollectorActivity extends AppCompatActivity implements SensorEventListener{
     private final static int STRING_MAX_SIZE = 10000;
 
-    String[] Perguntas = {"Pergunta 1 Vamos testar se a pergunta é grande demais para caber na tela?","Pergunta 2? Será que essa pergunta é grande demais para caber na tela? Vamos descobrir depois de testar o programa!","Pergunta 3?Por favor, transcreva aqui o último livro da bíblia, conhecido pelo nome de Apocalipse","Pergunta Aleatória 1?","Pergunta Aleatórioa 2?", "Pergunta Aleatória 3?"};
+    String[] Perguntas = {"Você acredita que provas convencionais medem de maneira assertiva as capacidades dos alunos?",
+            "Explique para um amigo mais jovem como estudar para o Vestibular.",
+            "Explique como chegar na sua casa sem utilizar nenhum nome de rua.",
+            "Você tem a oportunidade de aprender a tocar um novo instrumento? Qual você escolheria e por quê?",
+            "Você acredita que o Facebook melhora a qualidade de vida das pessoas? Desenvolva.",
+            "Você acredita que vale a pena investir em exploração espacial?",
+            "Desenovlva um argumento a favor ou contra o uso de celulares enquanto dirige.",
+            "O que você gosta e não gosta em relação ao transporte público?",
+            "Explique para uma criança como realizar uma tarefa (e.g. atravessar a rua).",
+            "Desenvolva um argumento a favor ou contra a seguinte declaração: violência televisiva é apropriada para públicos de todas as idades.",
+            "Você acreidta que a liberação do porte de armas aumentaria o número de crimes violentos?",
+            "Você acredita que restrições de idade para o consumo de álcool são efetivas?",
+            "As faculdades públicas deveriam continuar sendo gratuitas para todos? Explique sua resposta.",
+            "Você acredita que é aceitável o governo ler o seus emails por motivos anti-terrorismo?",
+            "Descreva o que você fez no último fim de semana.",
+            "Como você convidaria seus amigos para uma festa se telefones e a Internet não existissem?",
+            "Escreva um resumo do enredo do seu filme favorito.",
+            "Os restaurantes deveriam ser obrigados a colocar as informações nutricionais no cardápio?",
+            "Decida uma festa ou evento que você gostaria de organizar e escreva detalhes de como você gostaria de organizar o evento (música, local, convidados, etc.).",
+            "Você é chamado para uma entrevista de emprego no Google. Como você se prepararia?",
+            "Explique para sua avó como usar o smartphone para achar um novo restaurante no bairro."};
     int[] PerguntasSelecionadas = new int[3];
 
     File folder;
@@ -91,6 +114,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
         setContentView(R.layout.activity_collector);
         String userName = intent.getStringExtra(MainActivity.USER_NAME);
 
+
         String Folder = userName;
         folder = new File(Environment.getExternalStorageDirectory() + File.separator + "aegis" + File.separator +Folder);
 
@@ -98,6 +122,8 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
         GyroscopeFile = new File("/sdcard/aegis/" + Folder + "/Gyroscope.csv");
         MagnetometerFile = new File("/sdcard/aegis/" + Folder + "/Magnetometer.csv");
         TouchEventFile = new File("/sdcard/aegis/" + Folder + "/TouchEvent.csv");
+
+
 
         //Txtbox editavel da tela
         textBox = (EditText) findViewById(R.id.TxtA1);
@@ -114,19 +140,19 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
         //mTxtUserName.setText(userName);
         Random r = new Random();
         int NumSorteado;
-        int i = 0;
         boolean repetido = false;
+        int contadorPerguntasSelecionadas = 0;
 
-        while(i < PerguntasSelecionadas.length){
+        while(contadorPerguntasSelecionadas < PerguntasSelecionadas.length){
             NumSorteado = r.nextInt(Perguntas.length);
-            for(int j = 0; j < i; j++){
+            for(int j = 0; j < contadorPerguntasSelecionadas; j++){
                 if(PerguntasSelecionadas[j] == NumSorteado) {
                     repetido = true;
                 }
             }
             if(!repetido){
-                PerguntasSelecionadas[i] = NumSorteado;
-                i++;
+                PerguntasSelecionadas[contadorPerguntasSelecionadas] = NumSorteado;
+                contadorPerguntasSelecionadas++;
             }
             repetido = false;
         }
@@ -309,6 +335,23 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
 
     @Override public void onBackPressed() {
         if( mCollectorKeyboard.isCollectorKeyboardVisible() ) mCollectorKeyboard.hideCollectorKeyboard(); else this.finish();
+    }
+
+    @Override public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.i("Jon", String.valueOf(newConfig.orientation));
+        final View view = findViewById(R.id.scrollView);
+        final Configuration finalNewConfig = newConfig;
+
+        ViewTreeObserver observer = view.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                mCollectorKeyboard.updateCollectorKeyboardLayout(finalNewConfig.orientation);
+                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
     }
 
 }

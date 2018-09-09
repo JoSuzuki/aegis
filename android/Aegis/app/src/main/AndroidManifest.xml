@@ -21,7 +21,10 @@
         </activity>
         <activity android:name=".SensorsActivity"></activity>
         <activity android:name=".EndActivity"></activity>
-        <activity android:name=".CollectorActivity"></activity>
+        <activity
+            android:name=".CollectorActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>
