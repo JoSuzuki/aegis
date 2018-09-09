@@ -51,6 +51,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
             "Você é chamado para uma entrevista de emprego no Google. Como você se prepararia?",
             "Explique para sua avó como usar o smartphone para achar um novo restaurante no bairro."};
     int[] PerguntasSelecionadas = new int[3];
+    String ActivityID;
 
     File folder;
 
@@ -73,6 +74,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
     int PhoneOrientation;
     int SensorType;
     int eventAction;
+    String eventTime;
 
     //Valor dos Sensores
     String AccelX, AccelY, AccelZ;
@@ -113,7 +115,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
         Intent intent = getIntent();
         setContentView(R.layout.activity_collector);
         String userName = intent.getStringExtra(MainActivity.USER_NAME);
-
+        ActivityID = userName;
 
         String Folder = userName;
         folder = new File(Environment.getExternalStorageDirectory() + File.separator + "aegis" + File.separator +Folder);
@@ -226,9 +228,10 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
                     PosY = Float.toString(event.getY());
                     Press = Float.toString(event.getPressure());
                     Area = Float.toString(event.getSize());
+                    eventTime = Long.toString(event.getEventTime());
 
                     //Escrever no Arquivo
-                    BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + "" + ',' + "" + ','
+                    BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + eventTime + ',' + ActivityID + ','
                             + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
                             + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
 
@@ -241,7 +244,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
                     Area = Float.toString(event.getSize());
 
                     //Escrever no Arquivo
-                    BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + "" + ',' + "" + ','
+                    BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + eventTime + ',' + ActivityID + ','
                             + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
                             + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
                     BufferAccel = GravarArquivo(AccelerometerFile,BufferAccel,"", false);
@@ -271,7 +274,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
             Area = Float.toString(event.getSize());
 
             //Escrever no Arquivo
-            BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + "" + ',' + "" + ','
+            BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + event.getEventTime() + ',' + ActivityID + ','
                     + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
                     + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
 
@@ -301,6 +304,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
         unixTime = Long.toString(System.currentTimeMillis());
         display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         PhoneOrientation = display.getRotation();
+        eventTime = Long.toString(event.timestamp);
 
         if (SensorType == Sensor.TYPE_ACCELEROMETER){
             AccelX = Float.toString(event.values[0]);
@@ -308,7 +312,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
             AccelZ = Float.toString(event.values[2]);
 
             //Gravacao dos Dados no Arquivo
-            BufferAccel = GravarArquivo(AccelerometerFile, BufferAccel,unixTime + ',' + "" + ',' + "" + ','
+            BufferAccel = GravarArquivo(AccelerometerFile, BufferAccel,unixTime + ',' + eventTime + ',' + ActivityID + ','
                     + AccelX + ',' + AccelY + ',' + AccelZ + ','
                     + PhoneOrientation + '\n', true);
 
@@ -317,7 +321,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
             GyroY = Float.toString(event.values[1]);
             GyroZ = Float.toString(event.values[2]);
 
-            BufferGyro = GravarArquivo(GyroscopeFile, BufferGyro,unixTime + ',' + "" + ',' + "" + ','
+            BufferGyro = GravarArquivo(GyroscopeFile, BufferGyro,unixTime + ',' + eventTime + ',' + ActivityID + ','
                     + GyroX + ',' + GyroY + ',' + GyroZ + ','
                     + PhoneOrientation + '\n', true);
 
@@ -327,7 +331,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
             MagY = Float.toString(event.values[1]);
             MagZ = Float.toString(event.values[2]);
 
-            BufferMag = GravarArquivo(MagnetometerFile, BufferMag,unixTime + ',' + "" + ',' + "" + ','
+            BufferMag = GravarArquivo(MagnetometerFile, BufferMag,unixTime + ',' + eventTime + ',' + ActivityID + ','
                     + MagX + ',' + MagY + ',' + MagZ + ','
                     + PhoneOrientation + '\n', true);
         }
