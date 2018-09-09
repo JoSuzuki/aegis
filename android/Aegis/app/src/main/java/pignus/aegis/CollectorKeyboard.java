@@ -50,6 +50,8 @@ public class CollectorKeyboard {
     String PosY;
     String Press;
     String Area;
+    String eventTime;
+    String ActivityID;
 
     Display display;
     int phoneOrientation;
@@ -89,16 +91,24 @@ public class CollectorKeyboard {
 
             //Escrever no Arquivo
             BufferKeyPress = GravarArquivo(KeyPressEventFile, BufferKeyPress,unixTime + ',' + "" + ',' + pressType + ','
-                    + "" + ',' + keyCode + ',' + phoneOrientation + '\n', false);
+                    + ActivityID + ',' + keyCode + ',' + phoneOrientation + '\n', false);
 
 
 
         }
 
         @Override
-        public void onRelease(int i) {
+        public void onRelease(int keyCode) {
             Log.i("Jo", "onRelease");
+            String unixTime = Long.toString(System.currentTimeMillis());
+            String pressType = "1";
+            display = ((WindowManager) mHostActivity.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            phoneOrientation = display.getRotation();
+            Log.i("Jo", String.valueOf(phoneOrientation));
 
+            //Escrever no Arquivo
+            BufferKeyPress = GravarArquivo(KeyPressEventFile, BufferKeyPress,unixTime + ',' + "" + ',' + pressType + ','
+                    + ActivityID + ',' + keyCode + ',' + phoneOrientation + '\n', false);
         }
 
         @Override
@@ -157,6 +167,7 @@ public class CollectorKeyboard {
     };
 
     public CollectorKeyboard(Activity host, int viewId, int layoutId, String folderName) {
+        ActivityID = folderName;
         mHostActivity = host;
         mKeyboardView = (KeyboardView) mHostActivity.findViewById(viewId);
         mKeyboardView.setKeyboard(new Keyboard(mHostActivity, layoutId));
@@ -173,12 +184,13 @@ public class CollectorKeyboard {
                     PosY = Float.toString(event.getY());
                     Press = Float.toString(event.getPressure());
                     Area = Float.toString(event.getSize());
+                    eventTime = Long.toString(event.getEventTime());
                     display = ((WindowManager) mHostActivity.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
                     phoneOrientation = display.getRotation(); // 0 is portrait
                     Log.i("Jo", String.valueOf(phoneOrientation));
 
                     //Escrever no Arquivo
-                    BufferKeyboardTouch = GravarArquivo(KeyboardTouchFile, BufferKeyboardTouch,unixTime + ',' + "" + ',' + "" + ','
+                    BufferKeyboardTouch = GravarArquivo(KeyboardTouchFile, BufferKeyboardTouch,unixTime + ',' + eventTime + ',' + ActivityID + ','
                             + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
                             + Press + ',' + Area + ',' + phoneOrientation + '\n', false);
 
