@@ -31,7 +31,7 @@ public class CollectorKeyboard {
     private Activity mHostActivity;
 
 
-    private boolean caps = false;
+    private boolean shift = false;
 
     private String BufferKeyPress = "";
     private String BufferKeyboardTouch = "";
@@ -122,8 +122,8 @@ public class CollectorKeyboard {
             if (keyCode == Keyboard.KEYCODE_DELETE) {
                 if (editable != null && start > 0) editable.delete(start - 1, start);
             } else if (keyCode == Keyboard.KEYCODE_SHIFT) {
-                caps = !caps;
-                mKeyboardView.getKeyboard().setShifted(caps);
+                shift = !shift;
+                mKeyboardView.getKeyboard().setShifted(shift);
                 mKeyboardView.invalidateAllKeys();
             } else if (keyCode == DONE) {
                 hideCollectorKeyboard();
@@ -131,8 +131,11 @@ public class CollectorKeyboard {
                 editable.append("/n");
             } else {
                 Character character;
-                if (caps) {
+                if (shift) {
                     character = Character.toUpperCase((char) keyCode);
+                    shift = !shift;
+                    mKeyboardView.getKeyboard().setShifted(shift);
+                    mKeyboardView.invalidateAllKeys();
                 } else {
                     character = (char) keyCode;
                 }
