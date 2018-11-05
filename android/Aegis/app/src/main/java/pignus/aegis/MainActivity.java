@@ -32,5 +32,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        final Button buttonLogin = findViewById(R.id.btnLogin);
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.i("Diego", "Button Pressed");
+
+                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

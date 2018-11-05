@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="AEGIS"
+            android:textSize="40dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/tviewLogin" />
+
+        <Spinner
+            android:id="@+id/sprLogin"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/tviewLogin"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+
+        <EditText
+            android:id="@+id/Txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/sprLogin"
+            android:layout_marginTop="20dp"
+            android:ems="15"
+            android:minLines="1"
+            android:hint="@string/text_box"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"/>
+
+        <Button
+            android:id="@+id/btnEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Txt"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:elevation="0dp"
+            android:text="Login" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

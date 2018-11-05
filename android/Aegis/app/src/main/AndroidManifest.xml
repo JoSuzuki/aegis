@@ -25,6 +25,7 @@
             android:name=".CollectorActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation|screenSize"></activity>
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>
