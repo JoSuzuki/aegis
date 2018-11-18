@@ -15,20 +15,12 @@
             android:layout_width="wrap_content"
             android:id="@+id/tviewLogin" />
 
-        <Spinner
-            android:id="@+id/sprLogin"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@id/tviewLogin"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp" />
-
         <EditText
             android:id="@+id/Txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/sprLogin"
+            android:layout_below="@id/tviewLogin"
             android:layout_marginTop="20dp"
             android:ems="15"
             android:minLines="1"
@@ -45,6 +37,16 @@
             android:layout_centerHorizontal="true"
             android:elevation="0dp"
             android:text="Login" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="%"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/btnLogin"
+            android:layout_marginTop="20dp"
+            android:id="@+id/tviewProb" />
 
         <android.inputmethodservice.KeyboardView
             android:id="@+id/keyboardview"

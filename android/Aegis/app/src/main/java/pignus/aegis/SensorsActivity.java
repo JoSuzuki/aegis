@@ -103,7 +103,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         textBox = (EditText) findViewById(R.id.TxtA1);
 
         // Collector keyboard
-        mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard, userName);
+        mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard, userName, false);
         mCollectorKeyboard.registerEditText(R.id.TxtA1);
 
         //Txts da Tela

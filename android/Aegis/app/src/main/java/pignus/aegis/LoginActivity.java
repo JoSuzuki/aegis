@@ -16,27 +16,29 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+
+import javax.net.ssl.HttpsURLConnection;
+import java.net.URL;
+
+import pignus.aegis.Http;
 
 public class LoginActivity extends AppCompatActivity  implements SensorEventListener {
-    private final static int STRING_MAX_SIZE = 10000;
     String ActivityID;
-
-    File folder;
-
-    File AccelerometerFile;
-    File GyroscopeFile;
-    File MagnetometerFile;
-    File TouchEventFile;
-
 
     String BufferAccel = "";
     String BufferGyro = "";
@@ -44,6 +46,8 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
     String BufferTouch = "";
 
     CollectorKeyboard mCollectorKeyboard;
+
+    TextView txtProb;
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer, mGyroscope, mMagnetometer;
@@ -62,119 +66,86 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
     //Txt da Tela
     EditText textBox;
 
-    private String GravarArquivo(File Arquivo, String bufferDados, String dados, boolean Buffer){
-        if(bufferDados.length() + dados.length() > STRING_MAX_SIZE || Buffer == false) {
-            try {
-                FileOutputStream fOut = new FileOutputStream(Arquivo, true);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                myOutWriter.write(bufferDados + dados);
-                myOutWriter.flush();
-                myOutWriter.close();
-                fOut.close();
-                bufferDados = "";
-                Log.i("Diego", "File Writen");
-            } catch (Exception e) {
-                Log.e("Diego", "Could not write on file");
-            }
-        }else {
-            bufferDados = bufferDados + dados;
-            Log.i("Diego", Integer.toString(bufferDados.length() + dados.length()));
-        }
+    private final String USER_AGENT = "Mozilla/5.0";
+
+    private String GravarArquivo(String bufferDados, String dados){
+        bufferDados = bufferDados + dados;
         return bufferDados;
+    }
+
+    private void sendGet() throws Exception {
+        Log.i("Diego", "Teste1");
+        String url = "https://127.0.0.1:8000/getjson/";
+
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        Log.i("Diego", "Teste2");
+
+        // optional default is GET
+        con.setRequestMethod("GET");
+        Log.i("Diego", "Teste11");
+
+        //add request header
+        //con.setRequestProperty("User-Agent", USER_AGENT);
+        Log.i("Diego", "Teste12");
+
+        int responseCode = con.getResponseCode();
+        Log.i("Diego", "Teste4");
+        System.out.println("\nSending 'GET' request to URL : " + url);
+        System.out.println("Response Code : " + responseCode);
+
+        BufferedReader in = new BufferedReader(
+            new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            Log.i("Diego", "Teste5");
+            response.append(inputLine);
+        }
+        in.close();
+
+        //print result
+        Log.i("Diego", response.toString());
+        Log.i("Diego", "Teste3");
+        System.out.println(response.toString());
+    }
+
+
+    public void Autenticate(String result){
+        try {
+            Log.i("Diego", "Result: " + result);
+            JSONObject obj = new JSONObject(result);
+            double prob = (double)obj.get("auth");
+            Log.i("Diego", "Auth: " + prob );
+            txtProb.setText( Double.toString(prob));
+            if(prob == 1.0){
+                Log.i("Diego", "Login Ok");
+            }else{
+                Log.i("Diego", "Login Failed");
+            }
+
+        }catch(Exception e){
+
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        ActivityID = intent.getStringExtra(MainActivity.USER_NAME);
+
         setContentView(R.layout.activity_login);
 
-        String[] arraySpinner = new String[] {
-                "Diego", "Jonathan", "Thiago"
-        };
+        textBox = findViewById(R.id.Txt);
 
+        txtProb = findViewById(R.id.tviewProb);
 
-        final Spinner s = (Spinner) findViewById(R.id.sprLogin);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, arraySpinner);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        s.setAdapter(adapter);
+        final LoginActivity loginActivity = this;
 
-        ActivityID =  s.getSelectedItem().toString();
-
-        s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int arg2, long arg3) {
-                ActivityID = s.getSelectedItem().toString();
-                Log.i("Diego", "Item selected");
-                Log.i("Diego", ActivityID);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-        });
-
-        final LoginActivity activity = this;
-        textBox = (EditText) findViewById(R.id.Txt);
-
-        textBox.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Log.i("Diego", "textBox Pressed");
-                //ActivityID = s.getSelectedItem().toString();
-                String Folder = ActivityID;
-                folder = new File(Environment.getExternalStorageDirectory() + File.separator + "aegis" + File.separator +Folder);
-
-                AccelerometerFile = new File("/sdcard/aegis/" + Folder + "/Accelerometer.csv");
-                GyroscopeFile = new File("/sdcard/aegis/" + Folder + "/Gyroscope.csv");
-                MagnetometerFile = new File("/sdcard/aegis/" + Folder + "/Magnetometer.csv");
-                TouchEventFile = new File("/sdcard/aegis/" + Folder + "/TouchEvent.csv");
-
-                if (!folder.exists()) {
-                    folder.mkdirs();
-                }
-
-                if(!AccelerometerFile.exists()){
-                    try {
-                        AccelerometerFile.createNewFile();
-                        Log.i("Diego", "AccelerometerFile Created");
-                    } catch (Exception e) {
-                        Log.e("Diego", "Could not create AccelerometerFile",e);
-                    }
-                }
-
-                if(!GyroscopeFile.exists()){
-                    try {
-                        GyroscopeFile.createNewFile();
-                        Log.i("Diego", "GyroscopeFile Created");
-                    } catch (Exception e) {
-                        Log.e("Diego", "Could not create GyroscopeFile",e);
-                    }
-                }
-
-                if(!MagnetometerFile.exists()){
-                    try {
-                        MagnetometerFile.createNewFile();
-                        Log.i("Diego", "MagnetometerFile Created");
-                    } catch (Exception e) {
-                        Log.e("Diego", "Could not create MagnetometerFile",e);
-                    }
-
-                }if(!TouchEventFile.exists()){
-                    try {
-                        TouchEventFile.createNewFile();
-                        Log.i("Diego", "TouchEventFile Created");
-                    } catch (Exception e) {
-                        Log.e("Diego", "Could not create TouchEventFile",e);
-                    }
-                }
-
-                mCollectorKeyboard = new CollectorKeyboard(activity, R.id.keyboardview, R.xml.collector_keyboard, ActivityID);
-                mCollectorKeyboard.registerEditText(R.id.Txt);
-
-            }
-        });
+       mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard, ActivityID, true);
+       mCollectorKeyboard.registerEditText(R.id.Txt);
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -199,12 +170,11 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
                     eventTime = Long.toString(event.getEventTime());
 
                     //Escrever no Arquivo
-                    BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + eventTime + ',' + ActivityID + ','
+                    BufferTouch = GravarArquivo(BufferTouch,unixTime + ',' + eventTime + ',' + ActivityID + ','
                             + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
-                            + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
+                            + Press + ',' + Area + ',' + PhoneOrientation + '\n');
 
                     Log.i("Diego", "Button start press");
-                    return true;
                 } else if (eventAction == MotionEvent.ACTION_UP || eventAction == MotionEvent.ACTION_POINTER_UP ) {
                     PosX = Float.toString(event.getX());
                     PosY = Float.toString(event.getY());
@@ -212,16 +182,28 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
                     Area = Float.toString(event.getSize());
 
                     //Escrever no Arquivo
-                    BufferTouch = GravarArquivo(TouchEventFile, BufferTouch,unixTime + ',' + eventTime + ',' + ActivityID + ','
+                    BufferTouch = GravarArquivo(BufferTouch, unixTime + ',' + eventTime + ',' + ActivityID + ','
                             + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
-                            + Press + ',' + Area + ',' + PhoneOrientation + '\n', false);
-                    BufferAccel = GravarArquivo(AccelerometerFile,BufferAccel,"", false);
-                    BufferMag = GravarArquivo(MagnetometerFile,BufferMag,"", false);
-                    BufferGyro = GravarArquivo(GyroscopeFile,BufferGyro,"", false);
-                    Intent intent = new Intent(getBaseContext(), EndActivity.class);
-                    startActivity(intent);
+                            + Press + ',' + Area + ',' + PhoneOrientation + '\n');
+                    BufferAccel = GravarArquivo(BufferAccel, "");
+                    BufferMag = GravarArquivo(BufferMag, "");
+                    BufferGyro = GravarArquivo(BufferGyro, "");
+                    //Intent intent = new Intent(getBaseContext(), EndActivity.class);
+                    //startActivity(intent);
                     Log.i("Diego", "Button Pressed");
-                    return true;
+
+                    //String response;
+                    Http http = new Http(loginActivity, BufferAccel, BufferGyro, BufferMag, mCollectorKeyboard.getBufferKeyPress(), mCollectorKeyboard.getBufferKeyboardTouch());
+                    BufferAccel = "";
+                    BufferGyro = "";
+                    BufferMag = "";
+                    textBox.setText("");
+                    http.execute();
+
+                    //try{
+                    //    sendGet();
+                    //}catch(Exception e){
+                    //}
                 }
                 return true;
             }
@@ -244,18 +226,18 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
             AccelZ = Float.toString(event.values[2]);
 
             //Gravacao dos Dados no Arquivo
-            BufferAccel = GravarArquivo(AccelerometerFile, BufferAccel,unixTime + ',' + eventTime + ',' + ActivityID + ','
+            BufferAccel = GravarArquivo(BufferAccel,unixTime + ',' + eventTime + ',' + ActivityID + ','
                     + AccelX + ',' + AccelY + ',' + AccelZ + ','
-                    + PhoneOrientation + '\n', true);
+                    + PhoneOrientation + '\n');
 
         }else if(SensorType == Sensor.TYPE_GYROSCOPE){
             GyroX = Float.toString(event.values[0]);
             GyroY = Float.toString(event.values[1]);
             GyroZ = Float.toString(event.values[2]);
 
-            BufferGyro = GravarArquivo(GyroscopeFile, BufferGyro,unixTime + ',' + eventTime + ',' + ActivityID + ','
+            BufferGyro = GravarArquivo(BufferGyro,unixTime + ',' + eventTime + ',' + ActivityID + ','
                     + GyroX + ',' + GyroY + ',' + GyroZ + ','
-                    + PhoneOrientation + '\n', true);
+                    + PhoneOrientation + '\n');
 
 
         }else if(SensorType == Sensor.TYPE_MAGNETIC_FIELD){
@@ -263,9 +245,9 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
             MagY = Float.toString(event.values[1]);
             MagZ = Float.toString(event.values[2]);
 
-            BufferMag = GravarArquivo(MagnetometerFile, BufferMag,unixTime + ',' + eventTime + ',' + ActivityID + ','
+            BufferMag = GravarArquivo(BufferMag,unixTime + ',' + eventTime + ',' + ActivityID + ','
                     + MagX + ',' + MagY + ',' + MagZ + ','
-                    + PhoneOrientation + '\n', true);
+                    + PhoneOrientation + '\n');
         }
     }
 

@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         editText = findViewById(R.id.editTextName);
-        mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview2, R.xml.collector_keyboard, "mainActivity");
+        mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview2, R.xml.collector_keyboard, "mainActivity", false);
         mCollectorKeyboard.registerEditText(R.id.editTextName);
         final Button button = findViewById(R.id.btnStart);
         button.setOnClickListener(new View.OnClickListener() {
@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Diego", "Button Pressed");
 
                 Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                intent.putExtra(USER_NAME, editText.getText().toString());
+
                 startActivity(intent);
             }
         });

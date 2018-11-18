@@ -26,6 +26,8 @@ import java.io.OutputStreamWriter;
  */
 
 public class CollectorKeyboard {
+    private boolean Buffer = false;
+
     private KeyboardView mKeyboardView;
 
     private Activity mHostActivity;
@@ -56,9 +58,21 @@ public class CollectorKeyboard {
     Display display;
     int phoneOrientation;
 
-    private String GravarArquivo(File Arquivo, String bufferDados, String dados, boolean Buffer){
+    public String getBufferKeyPress(){
+        String Buffer = this.BufferKeyPress;
+        this.BufferKeyPress = "";
+        return Buffer;
+    }
 
-        if(bufferDados.length() + dados.length() > STRING_MAX_SIZE || Buffer == false) {
+    public String getBufferKeyboardTouch(){
+        String Buffer = this.BufferKeyboardTouch;
+        this.BufferKeyboardTouch = "";
+        return Buffer;
+    }
+
+    private String GravarArquivo(File Arquivo, String bufferDados, String dados){
+
+        if(this.Buffer == false) {
             try {
                 FileOutputStream fOut = new FileOutputStream(Arquivo, true);
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
@@ -91,7 +105,7 @@ public class CollectorKeyboard {
 
             //Escrever no Arquivo
             BufferKeyPress = GravarArquivo(KeyPressEventFile, BufferKeyPress,unixTime + ',' + "" + ',' + pressType + ','
-                    + ActivityID + ',' + keyCode + ',' + phoneOrientation + '\n', false);
+                    + ActivityID + ',' + keyCode + ',' + phoneOrientation + '\n');
 
 
 
@@ -108,7 +122,7 @@ public class CollectorKeyboard {
 
             //Escrever no Arquivo
             BufferKeyPress = GravarArquivo(KeyPressEventFile, BufferKeyPress,unixTime + ',' + "" + ',' + pressType + ','
-                    + ActivityID + ',' + keyCode + ',' + phoneOrientation + '\n', false);
+                    + ActivityID + ',' + keyCode + ',' + phoneOrientation + '\n');
         }
 
         @Override
@@ -169,7 +183,8 @@ public class CollectorKeyboard {
         }
     };
 
-    public CollectorKeyboard(Activity host, int viewId, int layoutId, String folderName) {
+    public CollectorKeyboard(Activity host, int viewId, int layoutId, String folderName, boolean Buffer) {
+        this.Buffer = Buffer;
         ActivityID = folderName;
         mHostActivity = host;
         mKeyboardView = (KeyboardView) mHostActivity.findViewById(viewId);
@@ -195,7 +210,7 @@ public class CollectorKeyboard {
                     //Escrever no Arquivo
                     BufferKeyboardTouch = GravarArquivo(KeyboardTouchFile, BufferKeyboardTouch,unixTime + ',' + eventTime + ',' + ActivityID + ','
                             + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
-                            + Press + ',' + Area + ',' + phoneOrientation + '\n', false);
+                            + Press + ',' + Area + ',' + phoneOrientation + '\n');
 
                     Log.i("Diego", "Toque no teclado");
                 }
