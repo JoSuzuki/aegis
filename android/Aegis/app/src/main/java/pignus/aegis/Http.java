@@ -14,12 +14,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Http extends AsyncTask<String, String, String> {
-    private LoginActivity listener;
+    private HttpCallbackInterface listener;
+    private int request;
     private JSONObject postData;
+    private int responseCode;
 
-    public Http(LoginActivity listener, String BufferAccel, String BufferGyro, String BufferMag , String BufferKeyPress, String BufferKeyboardTouch){
+    public Http(HttpCallbackInterface listener, String login, String BufferAccel, String BufferGyro, String BufferMag , String BufferKeyPress, String BufferKeyboardTouch, int request){
         this.listener = listener;
+
         Map<String, String> bodyData = new HashMap<String, String>();
+        bodyData.put("Login", login);
         bodyData.put("Accelerometer", BufferAccel);
         bodyData.put("Gyroscope", BufferGyro);
         bodyData.put("Magnetometer", BufferMag);
@@ -27,6 +31,13 @@ public class Http extends AsyncTask<String, String, String> {
         bodyData.put("KeyboardTouch", BufferKeyboardTouch);
 
         this.postData = new JSONObject(bodyData);
+
+        this.request = request;
+    }
+
+    public Http(HttpCallbackInterface listener, int request){
+        this.listener = listener;
+        this.request = request;
     }
 
     @Override
@@ -42,7 +53,12 @@ public class Http extends AsyncTask<String, String, String> {
         //String url = "http://10.0.2.2:8000/getjson/";
         //String url = "https://aegisserver.herokuapp.com/pignus/test";
         //String url = "http://8e585b19.ngrok.io/pignus/test";
-        String url = "http://8e585b19.ngrok.io/pignus/single_request_login";
+        String url = "";
+        if (request == 0){
+            url = "http://8e585b19.ngrok.io/pignus/single_request_login";
+        }else{
+            url = "http://8e585b19.ngrok.io/pignus/users";
+        }
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -53,25 +69,21 @@ public class Http extends AsyncTask<String, String, String> {
 
         // optional default is GET
         //con.setRequestMethod("GET");
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestMethod("POST");
-        Log.i("Diego", "Teste11");
+        if(request == 0){
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestMethod("POST");
 
-        if (this.postData != null) {
-            Log.i("Diego", postData.toString());
-            OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-            writer.write(postData.toString());
-            writer.flush();
+            if (this.postData != null) {
+                Log.i("Diego", postData.toString());
+                OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                writer.write(postData.toString());
+                writer.flush();
+            }
+        }else{
+            con.setRequestMethod("GET");
         }
 
-        //add request header
-        //con.setRequestProperty("User-Agent", USER_AGENT);
-        Log.i("Diego", "Teste12");
-
-        int responseCode = con.getResponseCode();
-        Log.i("Diego", "Teste4");
-        System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Response Code : " + responseCode);
+        responseCode = con.getResponseCode();
 
         if(responseCode == 200){
             BufferedReader in = new BufferedReader(
@@ -80,17 +92,15 @@ public class Http extends AsyncTask<String, String, String> {
             StringBuffer response = new StringBuffer();
 
             while ((inputLine = in.readLine()) != null) {
-                Log.i("Diego", "Teste5");
                 response.append(inputLine);
             }
             in.close();
 
             Log.i("Diego", response.toString());
-            Log.i("Diego", "Teste3");
             System.out.println(response.toString());
             return response.toString();
         }
-
+        con.disconnect();
     }catch(Exception e){
         e.printStackTrace();
     }
@@ -100,6 +110,10 @@ public class Http extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        listener.Autenticate(result);
+        if(responseCode == 200){
+            listener.Callback(result);
+        }else{
+            listener.errorCallback();
+        }
     }
 }

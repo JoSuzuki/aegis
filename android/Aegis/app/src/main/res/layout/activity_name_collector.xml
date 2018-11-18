@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="pignus.aegis.NameCollectorActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="Aegis"
+            android:textSize="40dp"
+            android:id="@+id/textView2" />
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="120dp"
+            android:text="Iniciar Coleta"
+            android:textSize="30dp" />
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/editTextName"
+            android:layout_alignStart="@+id/editTextName"
+            android:layout_below="@+id/textView2"
+            android:layout_marginTop="58dp"
+            android:text="Nome:" />
+
+        <android.inputmethodservice.KeyboardView
+            android:id="@+id/keyboardview2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:focusable="true"
+            android:elevation="10dp"
+            android:layout_alignParentBottom="true"
+            android:focusableInTouchMode="true"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

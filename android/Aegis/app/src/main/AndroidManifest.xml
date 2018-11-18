@@ -14,6 +14,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".NameCollectorActivity"></activity>
+        <activity android:name=".SensorsActivity" />
+        <activity android:name=".EndActivity" />
+        <activity
+            android:name=".CollectorActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation|screenSize" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,13 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SensorsActivity"></activity>
-        <activity android:name=".EndActivity"></activity>
-        <activity
-            android:name=".CollectorActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="orientation|screenSize"></activity>
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".SelectLoginActivity"></activity>
     </application>
 
 </manifest>

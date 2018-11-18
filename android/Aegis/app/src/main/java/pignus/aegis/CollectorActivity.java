@@ -15,7 +15,6 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -114,7 +113,7 @@ public class CollectorActivity extends AppCompatActivity implements SensorEventL
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         setContentView(R.layout.activity_collector);
-        String userName = intent.getStringExtra(MainActivity.USER_NAME);
+        String userName = intent.getStringExtra(NameCollectorActivity.USER_NAME);
         ActivityID = userName;
 
         String Folder = userName;

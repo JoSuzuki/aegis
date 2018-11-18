@@ -7,6 +7,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaCas;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -23,27 +24,57 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.net.URL;
+import java.util.Random;
 
-import pignus.aegis.Http;
+public class LoginActivity extends AppCompatActivity  implements SensorEventListener, HttpCallbackInterface {
+    String[] Perguntas = {"Você acredita que provas convencionais medem de maneira assertiva as capacidades dos alunos?",
+            "Explique para um amigo mais jovem como estudar para o Vestibular.",
+            "Explique como chegar na sua casa sem utilizar nenhum nome de rua.",
+            "Você tem a oportunidade de aprender a tocar um novo instrumento? Qual você escolheria e por quê?",
+            "Você acredita que o Facebook melhora a qualidade de vida das pessoas? Desenvolva.",
+            "Você acredita que vale a pena investir em exploração espacial?",
+            "Desenvolva um argumento a favor ou contra o uso de celulares enquanto dirige.",
+            "O que você gosta e não gosta em relação ao transporte público?",
+            "Explique para uma criança como realizar uma tarefa (e.g. atravessar a rua).",
+            "Desenvolva um argumento a favor ou contra a seguinte declaração: violência televisiva é apropriada para públicos de todas as idades.",
+            "Você acredita que a liberação do porte de armas aumentaria o número de crimes violentos?",
+            "Você acredita que restrições de idade para o consumo de álcool são efetivas?",
+            "As faculdades públicas deveriam continuar sendo gratuitas para todos? Explique sua resposta.",
+            "Você acredita que é aceitável o governo ler o seus emails por motivos anti-terrorismo?",
+            "Descreva o que você fez no último fim de semana.",
+            "Como você convidaria seus amigos para uma festa se telefones e a Internet não existissem?",
+            "Escreva um resumo do enredo do seu filme favorito.",
+            "Os restaurantes deveriam ser obrigados a colocar as informações nutricionais no cardápio?",
+            "Decida uma festa ou evento que você gostaria de organizar e escreva detalhes de como você gostaria de organizar o evento (música, local, convidados, etc.).",
+            "Você é chamado para uma entrevista de emprego no Google. Como você se prepararia?",
+            "Explique para sua avó como usar o smartphone para achar um novo restaurante no bairro."};
 
-public class LoginActivity extends AppCompatActivity  implements SensorEventListener {
+
     String ActivityID;
+    String SessionNumber;
+
+    File folder;
+
+    File AccelerometerFile;
+    File GyroscopeFile;
+    File MagnetometerFile;
+    File TouchEventFile;
+    File KeyPressEventFile;
+    File KeyboardTouchFile;
 
     String BufferAccel = "";
     String BufferGyro = "";
     String BufferMag = "";
     String BufferTouch = "";
+    String BufferKeyPress = "";
+    String BufferKeyBoardTouch = "";
 
     CollectorKeyboard mCollectorKeyboard;
 
@@ -65,6 +96,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
 
     //Txt da Tela
     EditText textBox;
+    TextView txtQuestion;
 
     private final String USER_AGENT = "Mozilla/5.0";
 
@@ -73,46 +105,21 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
         return bufferDados;
     }
 
-    private void sendGet() throws Exception {
-        Log.i("Diego", "Teste1");
-        String url = "https://127.0.0.1:8000/getjson/";
-
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        Log.i("Diego", "Teste2");
-
-        // optional default is GET
-        con.setRequestMethod("GET");
-        Log.i("Diego", "Teste11");
-
-        //add request header
-        //con.setRequestProperty("User-Agent", USER_AGENT);
-        Log.i("Diego", "Teste12");
-
-        int responseCode = con.getResponseCode();
-        Log.i("Diego", "Teste4");
-        System.out.println("\nSending 'GET' request to URL : " + url);
-        System.out.println("Response Code : " + responseCode);
-
-        BufferedReader in = new BufferedReader(
-            new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            Log.i("Diego", "Teste5");
-            response.append(inputLine);
+    private void salvarArquivo(File Arquivo, String bufferDados){
+        try {
+            FileOutputStream fOut = new FileOutputStream(Arquivo, true);
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            myOutWriter.write(bufferDados);
+            myOutWriter.flush();
+            myOutWriter.close();
+            fOut.close();
+        } catch (Exception e) {
+            Log.e("Diego", "Could not write on file");
         }
-        in.close();
-
-        //print result
-        Log.i("Diego", response.toString());
-        Log.i("Diego", "Teste3");
-        System.out.println(response.toString());
     }
 
 
-    public void Autenticate(String result){
+    public void Callback(String result){
         try {
             Log.i("Diego", "Result: " + result);
             JSONObject obj = new JSONObject(result);
@@ -130,13 +137,34 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
         }
     }
 
+    public void errorCallback(){
+        txtProb.setText("Aconteceu um erro, tente novamente");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        ActivityID = intent.getStringExtra(MainActivity.USER_NAME);
+        ActivityID = intent.getStringExtra(SelectLoginActivity.USER_NAME);
+        SessionNumber = intent.getStringExtra(SelectLoginActivity.SESSION_NUMBER);
+
+        String Folder = ActivityID+SessionNumber;
+        folder = new File(Environment.getExternalStorageDirectory() + File.separator + "aegis" + File.separator +Folder);
+
+        AccelerometerFile = new File("/sdcard/aegis/login/" + Folder + "/Accelerometer.csv");
+        GyroscopeFile = new File("/sdcard/aegis/login/" + Folder + "/Gyroscope.csv");
+        MagnetometerFile = new File("/sdcard/aegis/login/" + Folder + "/Magnetometer.csv");
+        TouchEventFile = new File("/sdcard/aegis/login/" + Folder + "/TouchEvent.csv");
+        KeyPressEventFile = new File("/sdcard/aegis/login/" + Folder + "/KeyPressEvent.csv");
+        KeyboardTouchFile = new File ("/sdcard/aegis/login/" + Folder + "/KeyboardTouchEvent.csv");
 
         setContentView(R.layout.activity_login);
+
+        Random r = new Random();
+        int NumSorteado = r.nextInt(Perguntas.length);
+
+        txtQuestion = findViewById(R.id.tviewLogin);
+        txtQuestion.setText(Perguntas[NumSorteado]);
 
         textBox = findViewById(R.id.Txt);
 
@@ -144,7 +172,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
 
         final LoginActivity loginActivity = this;
 
-       mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard, ActivityID, true);
+       mCollectorKeyboard = new CollectorKeyboard(this, R.id.keyboardview, R.xml.collector_keyboard, ActivityID+SessionNumber, true);
        mCollectorKeyboard.registerEditText(R.id.Txt);
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -170,7 +198,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
                     eventTime = Long.toString(event.getEventTime());
 
                     //Escrever no Arquivo
-                    BufferTouch = GravarArquivo(BufferTouch,unixTime + ',' + eventTime + ',' + ActivityID + ','
+                    BufferTouch = GravarArquivo(BufferTouch,unixTime + ',' + eventTime + ',' + ActivityID+SessionNumber + ','
                             + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
                             + Press + ',' + Area + ',' + PhoneOrientation + '\n');
 
@@ -182,7 +210,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
                     Area = Float.toString(event.getSize());
 
                     //Escrever no Arquivo
-                    BufferTouch = GravarArquivo(BufferTouch, unixTime + ',' + eventTime + ',' + ActivityID + ','
+                    BufferTouch = GravarArquivo(BufferTouch, unixTime + ',' + eventTime + ',' + ActivityID+SessionNumber + ','
                             + event.getPointerCount() + ',' + '0' + ',' + eventAction + ',' + PosX + ',' + PosY + ','
                             + Press + ',' + Area + ',' + PhoneOrientation + '\n');
                     BufferAccel = GravarArquivo(BufferAccel, "");
@@ -193,11 +221,23 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
                     Log.i("Diego", "Button Pressed");
 
                     //String response;
-                    Http http = new Http(loginActivity, BufferAccel, BufferGyro, BufferMag, mCollectorKeyboard.getBufferKeyPress(), mCollectorKeyboard.getBufferKeyboardTouch());
+                    BufferKeyPress = mCollectorKeyboard.getBufferKeyPress();
+                    BufferKeyBoardTouch = mCollectorKeyboard.getBufferKeyboardTouch();
+                    Http http = new Http(loginActivity, ActivityID,BufferAccel, BufferGyro, BufferMag, BufferKeyPress, BufferKeyBoardTouch,0);
+
+                    salvarArquivo(AccelerometerFile, BufferAccel);
+                    salvarArquivo(GyroscopeFile, BufferGyro);
+                    salvarArquivo(MagnetometerFile, BufferMag);
+                    salvarArquivo(KeyPressEventFile,BufferKeyPress);
+                    salvarArquivo(KeyboardTouchFile,BufferKeyBoardTouch);
+
                     BufferAccel = "";
                     BufferGyro = "";
                     BufferMag = "";
+                    BufferKeyPress = "";
+                    BufferKeyBoardTouch = "";
                     textBox.setText("");
+
                     http.execute();
 
                     //try{
@@ -226,7 +266,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
             AccelZ = Float.toString(event.values[2]);
 
             //Gravacao dos Dados no Arquivo
-            BufferAccel = GravarArquivo(BufferAccel,unixTime + ',' + eventTime + ',' + ActivityID + ','
+            BufferAccel = GravarArquivo(BufferAccel,unixTime + ',' + eventTime + ',' + ActivityID+SessionNumber + ','
                     + AccelX + ',' + AccelY + ',' + AccelZ + ','
                     + PhoneOrientation + '\n');
 
@@ -235,7 +275,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
             GyroY = Float.toString(event.values[1]);
             GyroZ = Float.toString(event.values[2]);
 
-            BufferGyro = GravarArquivo(BufferGyro,unixTime + ',' + eventTime + ',' + ActivityID + ','
+            BufferGyro = GravarArquivo(BufferGyro,unixTime + ',' + eventTime + ',' + ActivityID+SessionNumber + ','
                     + GyroX + ',' + GyroY + ',' + GyroZ + ','
                     + PhoneOrientation + '\n');
 
@@ -245,7 +285,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
             MagY = Float.toString(event.values[1]);
             MagZ = Float.toString(event.values[2]);
 
-            BufferMag = GravarArquivo(BufferMag,unixTime + ',' + eventTime + ',' + ActivityID + ','
+            BufferMag = GravarArquivo(BufferMag,unixTime + ',' + eventTime + ',' + ActivityID+SessionNumber + ','
                     + MagX + ',' + MagY + ',' + MagZ + ','
                     + PhoneOrientation + '\n');
         }

@@ -89,7 +89,7 @@ public class SensorsActivity extends AppCompatActivity implements SensorEventLis
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         setContentView(R.layout.activity_sensors);
-        String userName = intent.getStringExtra(MainActivity.USER_NAME);
+        String userName = intent.getStringExtra(NameCollectorActivity.USER_NAME);
 
         String Folder = userName;
         folder = new File(Environment.getExternalStorageDirectory() + File.separator + "aegis" + File.separator + Folder);
