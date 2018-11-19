@@ -131,7 +131,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
             JSONObject obj = new JSONObject(result);
             double prob = (double)obj.get("auth");
             Log.i("Diego", "Auth: " + prob );
-            txtProb.setText( Double.toString(prob));
+            txtProb.setText("Prob: " + Double.toString(prob));
             if(prob == 1.0){
                 Log.i("Diego", "Login Ok");
             }else{
@@ -301,6 +301,8 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
                     BufferKeyPress = "";
                     BufferKeyBoardTouch = "";
                     textBox.setText("");
+
+                    txtProb.setText("Calculando Resultado");
 
                     http.execute();
 
