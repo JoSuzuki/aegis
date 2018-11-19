@@ -196,9 +196,26 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
                 Log.e("Diego", "Could not create MagnetometerFile",e);
             }
 
-        }if(!TouchEventFile.exists()){
+        }
+        if(!TouchEventFile.exists()){
             try {
                 TouchEventFile.createNewFile();
+                Log.i("Diego", "TouchEventFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create TouchEventFile",e);
+            }
+        }
+        if(!KeyPressEventFile.exists()){
+            try {
+                KeyPressEventFile.createNewFile();
+                Log.i("Diego", "TouchEventFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create TouchEventFile",e);
+            }
+        }
+        if(!KeyboardTouchFile.exists()){
+            try {
+                KeyboardTouchFile.createNewFile();
                 Log.i("Diego", "TouchEventFile Created");
             } catch (Exception e) {
                 Log.e("Diego", "Could not create TouchEventFile",e);

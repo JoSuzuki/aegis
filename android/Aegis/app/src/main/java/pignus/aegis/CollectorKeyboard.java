@@ -26,7 +26,7 @@ import java.io.OutputStreamWriter;
  */
 
 public class CollectorKeyboard {
-    private boolean Buffer = false;
+    private boolean Buffer = true;
 
     private KeyboardView mKeyboardView;
 
@@ -71,8 +71,7 @@ public class CollectorKeyboard {
     }
 
     private String GravarArquivo(File Arquivo, String bufferDados, String dados){
-
-        if(this.Buffer == false) {
+        if(!this.Buffer) {
             try {
                 FileOutputStream fOut = new FileOutputStream(Arquivo, true);
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
@@ -224,23 +223,25 @@ public class CollectorKeyboard {
         KeyPressEventFile = new File("/sdcard/aegis/" + Folder + "/KeyPressEvent.csv");
         KeyboardTouchFile = new File ("/sdcard/aegis/" + Folder + "/KeyboardTouchEvent.csv");
 
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-        if(!KeyPressEventFile.exists()){
-            try {
-                KeyPressEventFile.createNewFile();
-                Log.i("Diego", "KeyPressEventFile Created");
-            } catch (Exception e) {
-                Log.e("Diego", "Could not create KeyPressEventFile",e);
+        if(!Buffer) {
+            if (!folder.exists()) {
+                folder.mkdirs();
             }
-        }
-        if(!KeyboardTouchFile.exists()){
-            try {
-                KeyboardTouchFile.createNewFile();
-                Log.i("Diego", "KeyboardTouchFile Created");
-            } catch (Exception e) {
-                Log.e("Diego", "Could not create KeyboardTouchFile",e);
+            if (!KeyPressEventFile.exists()) {
+                try {
+                    KeyPressEventFile.createNewFile();
+                    Log.i("Diego", "KeyPressEventFile Created");
+                } catch (Exception e) {
+                    Log.e("Diego", "Could not create KeyPressEventFile", e);
+                }
+            }
+            if (!KeyboardTouchFile.exists()) {
+                try {
+                    KeyboardTouchFile.createNewFile();
+                    Log.i("Diego", "KeyboardTouchFile Created");
+                } catch (Exception e) {
+                    Log.e("Diego", "Could not create KeyboardTouchFile", e);
+                }
             }
         }
 
