@@ -107,11 +107,17 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
 
     private void salvarArquivo(File Arquivo, String bufferDados){
         try {
+            Log.i("Diego", "TesteEscrita1");
             FileOutputStream fOut = new FileOutputStream(Arquivo, true);
+            Log.i("Diego", "TesteEscrita2");
             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            Log.i("Diego", "TesteEscrita3");
             myOutWriter.write(bufferDados);
+            Log.i("Diego", "TesteEscrita4");
             myOutWriter.flush();
+            Log.i("Diego", "TesteEscrita5");
             myOutWriter.close();
+            Log.i("Diego", "TesteEscrita6");
             fOut.close();
         } catch (Exception e) {
             Log.e("Diego", "Could not write on file");
@@ -148,8 +154,10 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
         ActivityID = intent.getStringExtra(SelectLoginActivity.USER_NAME);
         SessionNumber = intent.getStringExtra(SelectLoginActivity.SESSION_NUMBER);
 
+        Log.i("Diego", "UsuarioLogin: " + ActivityID+SessionNumber);
+
         String Folder = ActivityID+SessionNumber;
-        folder = new File(Environment.getExternalStorageDirectory() + File.separator + "aegis" + File.separator +Folder);
+        folder = new File(Environment.getExternalStorageDirectory() + File.separator + "aegis" + File.separator + "login" + File.separator +Folder);
 
         AccelerometerFile = new File("/sdcard/aegis/login/" + Folder + "/Accelerometer.csv");
         GyroscopeFile = new File("/sdcard/aegis/login/" + Folder + "/Gyroscope.csv");
@@ -157,6 +165,45 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
         TouchEventFile = new File("/sdcard/aegis/login/" + Folder + "/TouchEvent.csv");
         KeyPressEventFile = new File("/sdcard/aegis/login/" + Folder + "/KeyPressEvent.csv");
         KeyboardTouchFile = new File ("/sdcard/aegis/login/" + Folder + "/KeyboardTouchEvent.csv");
+
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        if(!AccelerometerFile.exists()){
+            try {
+                AccelerometerFile.createNewFile();
+                Log.i("Diego", "AccelerometerFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create AccelerometerFile",e);
+            }
+        }
+
+        if(!GyroscopeFile.exists()){
+            try {
+                GyroscopeFile.createNewFile();
+                Log.i("Diego", "GyroscopeFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create GyroscopeFile",e);
+            }
+        }
+
+        if(!MagnetometerFile.exists()){
+            try {
+                MagnetometerFile.createNewFile();
+                Log.i("Diego", "MagnetometerFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create MagnetometerFile",e);
+            }
+
+        }if(!TouchEventFile.exists()){
+            try {
+                TouchEventFile.createNewFile();
+                Log.i("Diego", "TouchEventFile Created");
+            } catch (Exception e) {
+                Log.e("Diego", "Could not create TouchEventFile",e);
+            }
+        }
 
         setContentView(R.layout.activity_login);
 
@@ -320,6 +367,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
             public void onGlobalLayout() {
                 mCollectorKeyboard.updateCollectorKeyboardLayout(finalNewConfig.orientation);
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
             }
         });
     }
