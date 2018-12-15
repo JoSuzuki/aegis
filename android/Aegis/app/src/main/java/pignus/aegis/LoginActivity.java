@@ -107,36 +107,27 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
 
     private void salvarArquivo(File Arquivo, String bufferDados){
         try {
-            Log.i("Diego", "TesteEscrita1");
             FileOutputStream fOut = new FileOutputStream(Arquivo, true);
-            Log.i("Diego", "TesteEscrita2");
             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-            Log.i("Diego", "TesteEscrita3");
             myOutWriter.write(bufferDados);
-            Log.i("Diego", "TesteEscrita4");
             myOutWriter.flush();
-            Log.i("Diego", "TesteEscrita5");
             myOutWriter.close();
-            Log.i("Diego", "TesteEscrita6");
             fOut.close();
         } catch (Exception e) {
             Log.e("Diego", "Could not write on file");
         }
     }
 
-
     public void Callback(String result){
         try {
             Log.i("Diego", "Result: " + result);
             JSONObject obj = new JSONObject(result);
-            double prob = (double)obj.get("auth");
-            Log.i("Diego", "Auth: " + prob );
-            txtProb.setText("Prob: " + Double.toString(prob));
-            if(prob == 1.0){
-                Log.i("Diego", "Login Ok");
-            }else{
-                Log.i("Diego", "Login Failed");
-            }
+            double prob = (double)obj.get("prob");
+            double access = (int)obj.get("auth");
+            Intent intent = new Intent(getBaseContext(), AccessActivity.class);
+            intent.putExtra("PROB", prob);
+            intent.putExtra("ACCESS", access);
+            startActivity(intent);
 
         }catch(Exception e){
 

@@ -55,9 +55,9 @@ public class Http extends AsyncTask<String, String, String> {
         //String url = "http://8e585b19.ngrok.io/pignus/test";
         String url = "";
         if (request == 0){
-            url = "https://0ae60419.ngrok.io/pignus/single_request_login";
+            url = "http://30dc8c0b.ngrok.io/pignus/single_request_login";
         }else{
-            url = "https://0ae60419.ngrok.io/pignus/users";
+            url = "http://30dc8c0b.ngrok.io/pignus/users";
         }
 
         URL obj = new URL(url);
