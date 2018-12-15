@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity  implements SensorEventList
             Log.i("Diego", "Result: " + result);
             JSONObject obj = new JSONObject(result);
             double prob = (double)obj.get("prob");
-            double access = (int)obj.get("auth");
+            int access = (int)obj.get("auth");
             Intent intent = new Intent(getBaseContext(), AccessActivity.class);
             intent.putExtra("PROB", prob);
             intent.putExtra("ACCESS", access);
